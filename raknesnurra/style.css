@@ -2,11 +2,14 @@
     border: 1px solid #ddd;
     border-radius: 5px;
     width: 300px;
+    height: auto; /* Lägg till denna rad */
     padding: 20px;
     margin: 10px auto;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     font-family: Arial, sans-serif;
 }
+
+
 .input, .output {
     margin: 10px 0;
 }
@@ -28,3 +31,6 @@ button {
 button:hover {
     background-color: #45a049;
 }
+
+
+
