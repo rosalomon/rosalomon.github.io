@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="widget">
+        <div class="input">
+            <label for="loanAmount">Bolånets storlek:</label>
+            <input type="number" id="loanAmount" name="loanAmount">
+        </div>
+        <div class="input">
+            <label for="interestRate">Nuvarande räntesats (%):</label>
+            <input type="number" id="interestRate" name="interestRate">
+        </div>
+        <button onclick="calculate()">Beräkna</button>
+        <div class="output" id="output">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
