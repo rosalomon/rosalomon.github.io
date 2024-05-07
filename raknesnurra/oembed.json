@@ -1,9 +1,9 @@
 {
     "type": "rich",
     "version": "1.0",
-    "title": "Räknesnurra",
+    "title": "Räntesnurra",
     "width": 500,
-    "height": 300,
+    "height": 450,
     "html": "<iframe src='https://rosalomon.github.io/raknesnurra' frameborder='0' width='100%' height='100%' allowfullscreen></iframe>"
   }
   
