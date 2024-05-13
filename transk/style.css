@@ -9,7 +9,7 @@ body {
 }
 
 .centered-text {
-    text-align: center;
+    text-align: right; /* Ändrad från 'center' till 'right' */
     max-width: 800px;
     padding: 20px;
 }
