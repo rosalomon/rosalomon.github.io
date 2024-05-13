@@ -8,7 +8,7 @@
     <div id="textContainer" class="centered-text"></div>
 
     <script>
-        fetch('./text')
+        fetch('text/Bessemergatan.txt')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('textContainer').innerText = data;
