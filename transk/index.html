@@ -39,7 +39,7 @@
         fetch('text/test.txt')
             .then(response => response.text())
             .then(data => {
-                const chunkSize = 10; // Ändra denna siffra för att justera antalet tecken per del
+                const chunkSize = 2048; // Ändra denna siffra för att justera antalet tecken per del
                 colorizeText(data, chunkSize);
             })
             .catch((error) => {
