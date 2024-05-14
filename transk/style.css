@@ -20,5 +20,5 @@ body {
 .highlight {
     background-color: green;
     color: black; /* Svart textfärg */
-    padding: 1px; /* Justera padding efter behov */
+    padding: 5px; /* Justera padding efter behov */
 }
