@@ -3,6 +3,7 @@
 <head>
     <title>Din hemsida</title>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/gpt-3-encoder"></script>
 </head>
 <body>
     <div class="centered-text">
@@ -22,16 +23,21 @@
             return color;
         }
 
-        // Funktion för att dela upp texten och färglägga varje del
-        function colorizeText(text, chunkSize) {
+        // Funktion för att dela upp texten i tokens och färglägga varje del
+        function colorizeText(text, tokenSize) {
             const container = document.getElementById('textContainer');
             container.innerHTML = ''; // Rensa befintligt innehåll
 
-            for (let i = 0; i < text.length; i += chunkSize) {
-                const chunk = text.substring(i, i + chunkSize);
+            const GPT3Tokenizer = require('gpt-3-encoder');
+            const encoder = new GPT3Tokenizer();
+            const tokens = encoder.encode(text);
+
+            for (let i = 0; i < tokens.length; i += tokenSize) {
+                const chunk = tokens.slice(i, i + tokenSize);
+                const decodedChunk = encoder.decode(chunk);
                 const span = document.createElement('span');
                 span.style.backgroundColor = getRandomColor();
-                span.textContent = chunk;
+                span.textContent = decodedChunk;
                 container.appendChild(span);
             }
         }
@@ -39,8 +45,8 @@
         fetch('text/test.txt')
             .then(response => response.text())
             .then(data => {
-                const chunkSize = 2048; // Ändra denna siffra för att justera antalet tecken per del
-                colorizeText(data, chunkSize);
+                const tokenSize = 10; // Ändra denna siffra för att justera antalet tokens per del
+                colorizeText(data, tokenSize);
             })
             .catch((error) => {
                 console.error('Error:', error);
