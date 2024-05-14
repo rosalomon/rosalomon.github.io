@@ -8,9 +8,10 @@ function getRandomColor() {
     return color;
 }
 
-// Enkel tokenizer-funktion som delar text i ord (tokens)
+// Tokenizer-funktion som använder gpt-3-encoder
 function tokenize(text) {
-    return text.split(/(\s+)/).filter(token => token.trim().length > 0);
+    const encoder = require('gpt-3-encoder');
+    return encoder.encode(text);
 }
 
 // Funktion för att dela upp texten i tokens och färglägga varje del
@@ -22,7 +23,8 @@ function colorizeText(text, tokenSize) {
     let colorIndex = 1;
 
     for (let i = 0; i < tokens.length; i += tokenSize) {
-        const chunk = tokens.slice(i, i + tokenSize).join('');
+        const chunkTokens = tokens.slice(i, i + tokenSize);
+        const chunkText = gpt3_encoder.decode(chunkTokens);
         const color = getRandomColor();
 
         // Skapa och lägg till startmarkör
@@ -33,7 +35,7 @@ function colorizeText(text, tokenSize) {
         // Skapa och lägg till färglagd text
         const span = document.createElement('span');
         span.style.backgroundColor = color;
-        span.textContent = chunk;
+        span.textContent = chunkText;
         container.appendChild(span);
 
         // Skapa och lägg till slutmarkör
@@ -48,7 +50,7 @@ function colorizeText(text, tokenSize) {
 fetch('text/test.txt')
     .then(response => response.text())
     .then(data => {
-        const tokenSize = 2048; // Ändra denna siffra för att justera antalet tokens per context window
+        const tokenSize = 2048; // Antalet tokens per "context window"
         colorizeText(data, tokenSize);
     })
     .catch((error) => {
