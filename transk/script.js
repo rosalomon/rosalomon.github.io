@@ -10,7 +10,7 @@ function getRandomColor() {
 
 // Funktion för att importera gpt-3-encoder
 async function importEncoder() {
-    const encoder = await import('https://cdn.jsdelivr.net/npm/gpt-3-encoder');
+    const encoder = await import('https://cdn.jsdelivr.net/npm/gpt-3-encoder@1.0.2');
     return encoder;
 }
 
