@@ -32,7 +32,7 @@ function colorizeText(text, tokenSize) {
 fetch('text/test.txt')
     .then(response => response.text())
     .then(data => {
-        const tokenSize = 10; // Ändra denna siffra för att justera antalet tokens per del
+        const tokenSize = 5; // Ändra denna siffra för att justera antalet tokens per del
         colorizeText(data, tokenSize);
     })
     .catch((error) => {
