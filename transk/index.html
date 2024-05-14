@@ -6,16 +6,41 @@
 </head>
 <body>
     <div class="centered-text">
-        <div id="textContainer" class="highlight">
-            Din markerade gröna text här...
+        <div id="textContainer">
+            Din markerade text kommer att visas här...
         </div>
     </div>
 
     <script>
+        // Funktion för att generera en slumpmässig färg
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        // Funktion för att dela upp texten och färglägga varje del
+        function colorizeText(text, chunkSize) {
+            const container = document.getElementById('textContainer');
+            container.innerHTML = ''; // Rensa befintligt innehåll
+
+            for (let i = 0; i < text.length; i += chunkSize) {
+                const chunk = text.substring(i, i + chunkSize);
+                const span = document.createElement('span');
+                span.style.backgroundColor = getRandomColor();
+                span.textContent = chunk;
+                container.appendChild(span);
+            }
+        }
+
         fetch('text/test.txt')
             .then(response => response.text())
             .then(data => {
-                document.getElementById('textContainer').innerText = data;
+                const chunkSize = 10; // Ändra denna siffra för att justera antalet tecken per del
+                colorizeText(data, chunkSize);
             })
             .catch((error) => {
                 console.error('Error:', error);
