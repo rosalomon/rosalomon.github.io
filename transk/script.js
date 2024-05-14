@@ -19,20 +19,36 @@ function colorizeText(text, tokenSize) {
     container.innerHTML = ''; // Rensa befintligt innehåll
 
     const tokens = tokenize(text);
+    let colorIndex = 1;
 
     for (let i = 0; i < tokens.length; i += tokenSize) {
         const chunk = tokens.slice(i, i + tokenSize).join('');
+        const color = getRandomColor();
+
+        // Skapa och lägg till startmarkör
+        const startMarker = document.createElement('div');
+        startMarker.textContent = `-------------DEL ${colorIndex}-------------`;
+        container.appendChild(startMarker);
+
+        // Skapa och lägg till färglagd text
         const span = document.createElement('span');
-        span.style.backgroundColor = getRandomColor();
+        span.style.backgroundColor = color;
         span.textContent = chunk;
         container.appendChild(span);
+
+        // Skapa och lägg till slutmarkör
+        const endMarker = document.createElement('div');
+        endMarker.textContent = `-------------DEL ${colorIndex}-------------`;
+        container.appendChild(endMarker);
+
+        colorIndex++;
     }
 }
 
 fetch('text/test.txt')
     .then(response => response.text())
     .then(data => {
-        const tokenSize = 5; // Ändra denna siffra för att justera antalet tokens per del
+        const tokenSize = 2048; // Ändra denna siffra för att justera antalet tokens per context window
         colorizeText(data, tokenSize);
     })
     .catch((error) => {
