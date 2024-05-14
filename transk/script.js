@@ -9,22 +9,22 @@ function getRandomColor() {
 }
 
 // Tokenizer-funktion som använder gpt-3-encoder
-function tokenize(text) {
-    const encoder = require('gpt-3-encoder');
-    return encoder.encode(text);
+async function tokenize(text) {
+    const { encode, decode } = await import('https://cdn.jsdelivr.net/npm/gpt-3-encoder');
+    return { tokens: encode(text), decode };
 }
 
 // Funktion för att dela upp texten i tokens och färglägga varje del
-function colorizeText(text, tokenSize) {
+async function colorizeText(text, tokenSize) {
     const container = document.getElementById('textContainer');
     container.innerHTML = ''; // Rensa befintligt innehåll
 
-    const tokens = tokenize(text);
+    const { tokens, decode } = await tokenize(text);
     let colorIndex = 1;
 
     for (let i = 0; i < tokens.length; i += tokenSize) {
         const chunkTokens = tokens.slice(i, i + tokenSize);
-        const chunkText = gpt3_encoder.decode(chunkTokens);
+        const chunkText = decode(chunkTokens);
         const color = getRandomColor();
 
         // Skapa och lägg till startmarkör
