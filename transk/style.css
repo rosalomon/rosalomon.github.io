@@ -12,5 +12,13 @@ body {
     text-align: left; /* Ändrad från 'center' till 'left' */
     max-width: 800px;
     padding: 20px;
-    text-decoration: green;
+
+}
+
+
+/* För att markera texten grönt */
+.highlight {
+    background-color: green;
+    color: black; /* Svart textfärg */
+    padding: 1px; /* Justera padding efter behov */
 }
