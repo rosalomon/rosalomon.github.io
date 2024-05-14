@@ -3,7 +3,6 @@
 <head>
     <title>Din hemsida</title>
     <link rel="stylesheet" type="text/css" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/gpt-3-encoder"></script>
 </head>
 <body>
     <div class="centered-text">
@@ -23,21 +22,23 @@
             return color;
         }
 
+        // Enkel tokenizer-funktion som delar text i ord (tokens)
+        function tokenize(text) {
+            return text.split(/(\s+)/).filter(token => token.trim().length > 0);
+        }
+
         // Funktion för att dela upp texten i tokens och färglägga varje del
         function colorizeText(text, tokenSize) {
             const container = document.getElementById('textContainer');
             container.innerHTML = ''; // Rensa befintligt innehåll
 
-            const GPT3Tokenizer = require('gpt-3-encoder');
-            const encoder = new GPT3Tokenizer();
-            const tokens = encoder.encode(text);
+            const tokens = tokenize(text);
 
             for (let i = 0; i < tokens.length; i += tokenSize) {
-                const chunk = tokens.slice(i, i + tokenSize);
-                const decodedChunk = encoder.decode(chunk);
+                const chunk = tokens.slice(i, i + tokenSize).join('');
                 const span = document.createElement('span');
                 span.style.backgroundColor = getRandomColor();
-                span.textContent = decodedChunk;
+                span.textContent = chunk;
                 container.appendChild(span);
             }
         }
