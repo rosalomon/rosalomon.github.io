@@ -5,7 +5,7 @@ document.getElementById('dateForm').addEventListener('submit', function(event) {
     const resultDiv = document.getElementById('result');
     resultDiv.innerHTML = ''; // Clear previous result
 
-    fetch('data\data.xlsx') // Path to your Excel file
+    fetch('data/data.xlsx') // Path to your Excel file
         .then(response => response.arrayBuffer())
         .then(data => {
             const workbook = XLSX.read(data, {type: 'array'});
