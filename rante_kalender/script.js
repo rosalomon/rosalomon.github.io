@@ -12,14 +12,20 @@ document.getElementById('dateForm').addEventListener('submit', function(event) {
             const sheetName = workbook.SheetNames[0];
             const sheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
+            // Function to convert Excel date to JavaScript date
+            const convertExcelDateToJSDate = (excelDate) => {
+                const date = new Date((excelDate - (25567 + 2)) * 86400 * 1000);
+                return date;
+            };
+
             const closestEvent = sheet.reduce((closest, current) => {
-                const currentDate = new Date(current.Datum);
-                const closestDate = new Date(closest.Datum);
+                const currentDate = convertExcelDateToJSDate(current.Datum);
+                const closestDate = convertExcelDateToJSDate(closest.Datum);
 
                 return Math.abs(currentDate - userDate) < Math.abs(closestDate - userDate) ? current : closest;
             });
 
-            const eventDate = new Date(closestEvent.Datum).toLocaleDateString();
+            const eventDate = convertExcelDateToJSDate(closestEvent.Datum).toLocaleDateString();
             resultDiv.innerHTML = `<p>Riksbanken kommer med räntebesked den ${eventDate} och det kan påverka din förhandling om en ny ränta med banken.</p>`;
         })
         .catch(error => {
