@@ -20,7 +20,6 @@ document.getElementById('dateForm').addEventListener('submit', function(event) {
 
             const filteredEvents = sheet.filter(event => 
                 event.Titel && event.Datum && 
-                event.Titel.includes('Penningpolitiskt möte') || 
                 event.Titel.includes('Publicering av penningpolitiskt beslut')
             );
 
