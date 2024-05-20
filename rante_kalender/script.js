@@ -14,16 +14,21 @@ document.getElementById('dateForm').addEventListener('submit', function(event) {
 
             // Function to convert Excel date to JavaScript date
             const convertExcelDateToJSDate = (excelDate) => {
-                const date = new Date((excelDate - (25567 + 2)) * 86400 * 1000);
-                return date;
+                // Assuming date is in the format "YYYY-MM-DD"
+                return new Date(excelDate);
             };
 
-            const closestEvent = sheet.reduce((closest, current) => {
+            const filteredEvents = sheet.filter(event => 
+                event.Titel.includes('penningpolitisk') && 
+                event.Titel.includes('Beslut om penningpolitiken')
+            );
+
+            const closestEvent = filteredEvents.reduce((closest, current) => {
                 const currentDate = convertExcelDateToJSDate(current.Datum);
                 const closestDate = convertExcelDateToJSDate(closest.Datum);
 
                 return Math.abs(currentDate - userDate) < Math.abs(closestDate - userDate) ? current : closest;
-            });
+            }, filteredEvents[0]); // Initialize with the first event
 
             const eventDate = convertExcelDateToJSDate(closestEvent.Datum).toLocaleDateString();
             resultDiv.innerHTML = `<p>Riksbanken kommer med räntebesked den ${eventDate} och det kan påverka din förhandling om en ny ränta med banken.</p>`;
