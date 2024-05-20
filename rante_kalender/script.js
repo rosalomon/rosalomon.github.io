@@ -19,8 +19,8 @@ document.getElementById('dateForm').addEventListener('submit', function(event) {
             };
 
             const filteredEvents = sheet.filter(event => 
-                event.Titel.includes('penningpolitisk') && 
-                event.Titel.includes('Beslut om penningpolitiken')
+                event.Titel.includes('Penningpolitiskt möte') || 
+                event.Titel.includes('Publicering av penningpolitiskt beslut')
             );
 
             const closestEvent = filteredEvents.reduce((closest, current) => {
