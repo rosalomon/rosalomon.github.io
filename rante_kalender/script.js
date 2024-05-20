@@ -19,9 +19,15 @@ document.getElementById('dateForm').addEventListener('submit', function(event) {
             };
 
             const filteredEvents = sheet.filter(event => 
+                event.Titel && event.Datum && 
                 event.Titel.includes('Penningpolitiskt möte') || 
                 event.Titel.includes('Publicering av penningpolitiskt beslut')
             );
+
+            if (filteredEvents.length === 0) {
+                resultDiv.innerHTML = `<p>Inga relevanta händelser hittades.</p>`;
+                return;
+            }
 
             const closestEvent = filteredEvents.reduce((closest, current) => {
                 const currentDate = convertExcelDateToJSDate(current.Datum);
@@ -35,5 +41,6 @@ document.getElementById('dateForm').addEventListener('submit', function(event) {
         })
         .catch(error => {
             resultDiv.innerHTML = `<p>Något gick fel: ${error.message}</p>`;
+            console.error(error); // Log the error to the console for debugging
         });
 });
