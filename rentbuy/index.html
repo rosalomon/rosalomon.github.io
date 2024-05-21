@@ -8,17 +8,42 @@
 </head>
 <body>
     <div class="container">
-        <div class="input-section">
+        <div class="choice-section">
+            <button id="buyBtn" class="choice-btn">Bostadsrätt</button>
+            <button id="rentBtn" class="choice-btn">Hyresrätt</button>
+        </div>
+        <div class="input-section" id="inputSection">
             <h2>Fyll i dina uppgifter</h2>
-            <label for="income">Inkomst:</label>
-            <input type="number" id="income" name="income">
+            <!-- Bostadsrätt fält -->
+            <div id="buyInputs" class="hidden">
+                <label for="purchasePrice">Köpeskilling:</label>
+                <input type="number" id="purchasePrice" name="purchasePrice">
+                
+                <label for="monthlyFee">Avgift per månad:</label>
+                <input type="number" id="monthlyFee" name="monthlyFee">
+                
+                <label for="interestRate">Ränta (%):</label>
+                <input type="range" id="interestRate" name="interestRate" min="0" max="10" step="0.1">
+                <span id="interestRateValue">0</span>%
+                
+                <label for="loanToValue">Belåningsgrad (%):</label>
+                <input type="range" id="loanToValue" name="loanToValue" min="0" max="100" step="1">
+                <span id="loanToValueValue">0</span>%
+                
+                <label for="pricePerSquareMeter">Pris per kvadratmeter:</label>
+                <input type="number" id="pricePerSquareMeter" name="pricePerSquareMeter">
+            </div>
             
-            <label for="downpayment">Insats:</label>
-            <input type="number" id="downpayment" name="downpayment">
-            
-            <label for="mortgage">Amorteringsregler:</label>
-            <input type="number" id="mortgage" name="mortgage">
-            
+            <!-- Hyresrätt fält -->
+            <div id="rentInputs" class="hidden">
+                <label for="monthlyRent">Månadshyra:</label>
+                <input type="number" id="monthlyRent" name="monthlyRent">
+                
+                <label for="deposit">Deposition (antal månadshyror):</label>
+                <input type="range" id="deposit" name="deposit" min="0" max="5" step="0.1">
+                <span id="depositValue">0</span> månadshyror
+            </div>
+
             <button id="calculateBtn">Beräkna</button>
         </div>
         <div class="result-section" id="resultSection">
