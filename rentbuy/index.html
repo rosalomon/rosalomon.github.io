@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ekonomisk Jämförelse</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="input-section">
+            <h2>Fyll i dina uppgifter</h2>
+            <label for="income">Inkomst:</label>
+            <input type="number" id="income" name="income">
+            
+            <label for="downpayment">Insats:</label>
+            <input type="number" id="downpayment" name="downpayment">
+            
+            <label for="mortgage">Amorteringsregler:</label>
+            <input type="number" id="mortgage" name="mortgage">
+            
+            <button id="calculateBtn">Beräkna</button>
+        </div>
+        <div class="result-section" id="resultSection">
+            <div class="result-left">
+                <h3>Framtida värde - Köpa bostadsrätt</h3>
+                <div id="buyResult">Väntar på beräkning...</div>
+            </div>
+            <div class="result-right">
+                <h3>Framtida värde - Hyra och investera</h3>
+                <div id="rentResult">Väntar på beräkning...</div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
