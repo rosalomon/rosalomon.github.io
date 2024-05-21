@@ -81,3 +81,4 @@ function calculateRentOption() {
     document.getElementById('rentResult').textContent = `Framtida värde: ${futureValueRent.toFixed(2)} kr`;
     document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
 }
+
