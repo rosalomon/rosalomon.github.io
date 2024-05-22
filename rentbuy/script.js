@@ -93,6 +93,12 @@ function showOverallReturnRateSlider(years) {
         span.textContent = this.value;
     });
 
+    overallSlider.addEventListener('touchend', function() {
+        this.disabled = true;
+        this.style.backgroundColor = '#ccc';
+        showIndividualReturnRateSliders(years, parseFloat(this.value));
+    });
+
     overallSlider.addEventListener('click', function() {
         this.disabled = true;
         this.style.backgroundColor = '#ccc';
