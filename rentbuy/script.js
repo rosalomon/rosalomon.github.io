@@ -89,20 +89,19 @@ function showOverallReturnRateSlider(years) {
     span.id = `overallReturnRateValue`;
     span.textContent = '0';
 
+    let isSliderClicked = false;
+
     overallSlider.addEventListener('input', function() {
         span.textContent = this.value;
     });
 
-    overallSlider.addEventListener('touchend', function() {
-        this.disabled = true;
-        this.style.backgroundColor = '#ccc';
-        showIndividualReturnRateSliders(years, parseFloat(this.value));
-    });
-
     overallSlider.addEventListener('click', function() {
-        this.disabled = true;
-        this.style.backgroundColor = '#ccc';
-        showIndividualReturnRateSliders(years, parseFloat(this.value));
+        if (!isSliderClicked) {
+            isSliderClicked = true;
+            this.disabled = true;
+            this.style.backgroundColor = '#ccc';
+            showIndividualReturnRateSliders(years, parseFloat(this.value));
+        }
     });
 
     returnRatesDiv.appendChild(label);
