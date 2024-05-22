@@ -159,19 +159,28 @@ function calculateBuyOption() {
     const monthlyFee = parseFloat(document.getElementById('monthlyFee').value);
     const interestRate = parseFloat(document.getElementById('interestRate').value) / 100;
     const loanToValue = parseFloat(document.getElementById('loanToValue').value) / 100;
-    const pricePerSquareMeter = parseFloat(document.getElementById('pricePerSquareMeter').value);
+    const size = parseFloat(document.getElementById('size').value);
     const yearsButton = document.querySelector('.year-btn.active');
     const years = yearsButton ? parseInt(yearsButton.getAttribute('data-years')) : 0;
 
-    if (isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(pricePerSquareMeter) || years === 0) {
+    if (isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(size) || years === 0) {
         alert('Var god fyll i alla fält korrekt.');
         return;
     }
 
     let futureValueBuy = purchasePrice;
-    for (let i = 1; i <= years; i++) {
-        const returnRate = parseFloat(document.getElementById(`returnRate${i}`).value) / 100;
-        futureValueBuy *= (1 + returnRate);
+    let returnRate;
+
+    if (document.getElementById('overallReturnRate').disabled) {
+        // If individual sliders are used
+        for (let i = 1; i <= years; i++) {
+            returnRate = parseFloat(document.getElementById(`returnRate${i}`).value) / 100;
+            futureValueBuy *= (1 + returnRate);
+        }
+    } else {
+        // If overall slider is used
+        returnRate = parseFloat(document.getElementById('overallReturnRate').value) / 100;
+        futureValueBuy *= Math.pow((1 + returnRate), years);
     }
 
     document.getElementById('buyResult').textContent = `Framtida värde: ${futureValueBuy.toFixed(2)} kr`;
