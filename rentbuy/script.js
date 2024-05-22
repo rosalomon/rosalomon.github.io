@@ -174,6 +174,7 @@ function calculateBuyOption() {
 
     if (overallSlider && overallSlider.disabled) {
         // If individual sliders are used
+        print("individuell slider igång")
         for (let i = 1; i <= years; i++) {
             const individualSlider = document.getElementById(`returnRate${i}`);
             if (individualSlider) {
@@ -187,6 +188,7 @@ function calculateBuyOption() {
     } else if (overallSlider) {
         // If overall slider is used
         returnRate = parseFloat(overallSlider.value) / 100;
+        print(returnRate)
         if (isNaN(returnRate)) {
             alert('Var god fyll i avkastningsslidern först.');
             return;
