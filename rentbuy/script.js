@@ -89,24 +89,32 @@ function showOverallReturnRateSlider(years) {
     span.id = `overallReturnRateValue`;
     span.textContent = '0';
 
-    let isSliderClicked = false;
-
     overallSlider.addEventListener('input', function() {
         span.textContent = this.value;
     });
 
-    overallSlider.addEventListener('click', function() {
-        if (!isSliderClicked) {
-            isSliderClicked = true;
-            this.disabled = true;
-            this.style.backgroundColor = '#ccc';
-            showIndividualReturnRateSliders(years, parseFloat(this.value));
+    const arrowBtn = document.createElement('button');
+    arrowBtn.textContent = '▼';
+    arrowBtn.classList.add('arrow-btn');
+
+    arrowBtn.addEventListener('click', function() {
+        if (overallSlider.disabled) {
+            overallSlider.disabled = false;
+            overallSlider.style.backgroundColor = '';
+            this.textContent = '▼';
+            document.querySelectorAll('.individual-return-rate').forEach(el => el.remove());
+        } else {
+            overallSlider.disabled = true;
+            overallSlider.style.backgroundColor = '#ccc';
+            this.textContent = '▲';
+            showIndividualReturnRateSliders(years, parseFloat(overallSlider.value));
         }
     });
 
     returnRatesDiv.appendChild(label);
     returnRatesDiv.appendChild(overallSlider);
     returnRatesDiv.appendChild(span);
+    returnRatesDiv.appendChild(arrowBtn);
     returnRatesDiv.appendChild(document.createElement('br'));
 
     returnRatesDiv.classList.remove('hidden');
@@ -118,6 +126,7 @@ function showIndividualReturnRateSliders(years, overallRate) {
     for (let i = 1; i <= years; i++) {
         const label = document.createElement('label');
         label.textContent = `Avkastning år ${i}:`;
+        label.classList.add('individual-return-rate');
 
         const slider = document.createElement('input');
         slider.type = 'range';
@@ -127,10 +136,12 @@ function showIndividualReturnRateSliders(years, overallRate) {
         slider.id = `returnRate${i}`;
         slider.name = `returnRate${i}`;
         slider.value = overallRate;
+        slider.classList.add('individual-return-rate');
 
         const span = document.createElement('span');
         span.id = `returnRateValue${i}`;
         span.textContent = overallRate;
+        span.classList.add('individual-return-rate');
 
         slider.addEventListener('input', function() {
             span.textContent = this.value;
@@ -139,7 +150,7 @@ function showIndividualReturnRateSliders(years, overallRate) {
         returnRatesDiv.appendChild(label);
         returnRatesDiv.appendChild(slider);
         returnRatesDiv.appendChild(span);
-        returnRatesDiv.appendChild(document.createElement('br'));
+        returnRatesDiv.appendChild(document.createElement('br')).classList.add('individual-return-rate');
     }
 }
 
