@@ -187,6 +187,10 @@ function calculateBuyOption() {
     } else if (overallSlider) {
         // If overall slider is used
         returnRate = parseFloat(overallSlider.value) / 100;
+        if (isNaN(returnRate)) {
+            alert('Var god fyll i avkastningsslidern först.');
+            return;
+        }
         futureValueBuy *= Math.pow((1 + returnRate), years);
     } else {
         alert('Var god välj avkastningsslidern först.');
