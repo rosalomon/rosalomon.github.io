@@ -1,17 +1,39 @@
 document.getElementById('buyBtn').addEventListener('click', function() {
     toggleActiveButton('buyBtn');
     showInputs('buyInputs');
+    document.getElementById('yearsSection').classList.remove('hidden');
+    document.getElementById('returnRates').classList.add('hidden');
 });
 
 document.getElementById('rentBtn').addEventListener('click', function() {
     toggleActiveButton('rentBtn');
     showInputs('rentInputs');
+    document.getElementById('yearsSection').classList.add('hidden');
+    document.getElementById('returnRates').classList.add('hidden');
+});
+
+document.querySelectorAll('.year-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        toggleActiveYearButton(this);
+        showReturnRateSliders(parseInt(this.getAttribute('data-years')));
+    });
 });
 
 function toggleActiveButton(activeId) {
     const buttons = document.querySelectorAll('.choice-btn');
     buttons.forEach(button => {
         if (button.id === activeId) {
+            button.classList.add('active');
+        } else {
+            button.classList.remove('active');
+        }
+    });
+}
+
+function toggleActiveYearButton(activeButton) {
+    const buttons = document.querySelectorAll('.year-btn');
+    buttons.forEach(button => {
+        if (button === activeButton) {
             button.classList.add('active');
         } else {
             button.classList.remove('active');
@@ -47,20 +69,55 @@ document.getElementById('calculateBtn').addEventListener('click', function() {
     }
 });
 
+function showReturnRateSliders(years) {
+    const returnRatesDiv = document.getElementById('returnRates');
+    returnRatesDiv.innerHTML = '';
+    for (let i = 1; i <= years; i++) {
+        const label = document.createElement('label');
+        label.textContent = `Avkastning år ${i}:`;
+
+        const slider = document.createElement('input');
+        slider.type = 'range';
+        slider.min = '0';
+        slider.max = '20';
+        slider.step = '0.1';
+        slider.id = `returnRate${i}`;
+        slider.name = `returnRate${i}`;
+
+        const span = document.createElement('span');
+        span.id = `returnRateValue${i}`;
+        span.textContent = '0';
+
+        slider.addEventListener('input', function() {
+            span.textContent = this.value;
+        });
+
+        returnRatesDiv.appendChild(label);
+        returnRatesDiv.appendChild(slider);
+        returnRatesDiv.appendChild(span);
+        returnRatesDiv.appendChild(document.createElement('br'));
+    }
+    returnRatesDiv.classList.remove('hidden');
+}
+
 function calculateBuyOption() {
     const purchasePrice = parseFloat(document.getElementById('purchasePrice').value);
     const monthlyFee = parseFloat(document.getElementById('monthlyFee').value);
     const interestRate = parseFloat(document.getElementById('interestRate').value) / 100;
     const loanToValue = parseFloat(document.getElementById('loanToValue').value) / 100;
     const pricePerSquareMeter = parseFloat(document.getElementById('pricePerSquareMeter').value);
+    const years = document.querySelector('.year-btn.active') ? parseInt(document.querySelector('.year-btn.active').getAttribute('data-years')) : 0;
 
-    if (isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(pricePerSquareMeter)) {
+    if (isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(pricePerSquareMeter) || years === 0) {
         alert('Var god fyll i alla fält korrekt.');
         return;
     }
 
-    // Placeholder logic for calculations
-    const futureValueBuy = purchasePrice * Math.pow((1 + 0.03), 10); // Assuming 3% annual growth
+    let futureValueBuy = purchasePrice;
+    for (let i = 1; i <= years; i++) {
+        const returnRate = parseFloat(document.getElementById(`returnRate${i}`).value) / 100;
+        futureValueBuy *= (1 + returnRate);
+    }
 
     document.getElementById('buyResult').textContent = `Framtida värde: ${futureValueBuy.toFixed(2)} kr`;
     document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
@@ -81,4 +138,3 @@ function calculateRentOption() {
     document.getElementById('rentResult').textContent = `Framtida värde: ${futureValueRent.toFixed(2)} kr`;
     document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
 }
-

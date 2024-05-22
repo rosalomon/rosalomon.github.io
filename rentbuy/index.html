@@ -14,6 +14,14 @@
             <button id="buyBtn" class="choice-btn">Bostadsrätt</button>
             <button id="rentBtn" class="choice-btn">Hyresrätt</button>
         </div>
+        <div class="years-section hidden" id="yearsSection">
+            <button class="year-btn" data-years="1">1 år</button>
+            <button class="year-btn" data-years="2">2 år</button>
+            <button class="year-btn" data-years="3">3 år</button>
+            <button class="year-btn" data-years="5">5 år</button>
+            <button class="year-btn" data-years="10">10 år</button>
+            <button class="year-btn" data-years="25">25 år</button>
+        </div>
         <div class="input-section" id="inputSection">
             <h2>Fyll i dina uppgifter</h2>
             <!-- Bostadsrätt fält -->
@@ -45,7 +53,11 @@
                 <input type="range" id="deposit" name="deposit" min="0" max="5" step="0.1">
                 <span id="depositValue">0</span> månadshyror
             </div>
-
+            
+            <div id="returnRates" class="hidden">
+                <!-- Sliders for return rates will be dynamically added here -->
+            </div>
+            
             <button id="calculateBtn">Beräkna</button>
         </div>
         <div class="result-section" id="resultSection">
