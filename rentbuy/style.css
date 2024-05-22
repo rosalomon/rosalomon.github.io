@@ -72,6 +72,12 @@ input[type="number"] {
 input[type="range"] {
     width: 100%;
     margin-bottom: 10px;
+    cursor: pointer;
+}
+
+input[type="range"]:disabled {
+    cursor: not-allowed;
+    background-color: #ccc;
 }
 
 button {
