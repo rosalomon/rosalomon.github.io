@@ -179,6 +179,9 @@ function calculateBuyOption() {
             if (individualSlider) {
                 returnRate = parseFloat(individualSlider.value) / 100;
                 futureValueBuy *= (1 + returnRate);
+            } else {
+                alert(`Var god fyll i avkastning för år ${i}.`);
+                return;
             }
         }
     } else if (overallSlider) {
