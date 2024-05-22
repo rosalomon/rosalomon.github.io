@@ -170,17 +170,24 @@ function calculateBuyOption() {
 
     let futureValueBuy = purchasePrice;
     let returnRate;
+    const overallSlider = document.getElementById('overallReturnRate');
 
-    if (document.getElementById('overallReturnRate').disabled) {
+    if (overallSlider && overallSlider.disabled) {
         // If individual sliders are used
         for (let i = 1; i <= years; i++) {
-            returnRate = parseFloat(document.getElementById(`returnRate${i}`).value) / 100;
-            futureValueBuy *= (1 + returnRate);
+            const individualSlider = document.getElementById(`returnRate${i}`);
+            if (individualSlider) {
+                returnRate = parseFloat(individualSlider.value) / 100;
+                futureValueBuy *= (1 + returnRate);
+            }
         }
-    } else {
+    } else if (overallSlider) {
         // If overall slider is used
-        returnRate = parseFloat(document.getElementById('overallReturnRate').value) / 100;
+        returnRate = parseFloat(overallSlider.value) / 100;
         futureValueBuy *= Math.pow((1 + returnRate), years);
+    } else {
+        alert('Var god välj avkastningsslidern först.');
+        return;
     }
 
     document.getElementById('buyResult').textContent = `Framtida värde: ${futureValueBuy.toFixed(2)} kr`;
