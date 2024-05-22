@@ -159,7 +159,7 @@ function calculateBuyOption() {
     const monthlyFee = parseFloat(document.getElementById('monthlyFee').value);
     const interestRate = parseFloat(document.getElementById('interestRate').value) / 100;
     const loanToValue = parseFloat(document.getElementById('loanToValue').value) / 100;
-    const size = parseFloat(document.getElementById('size').value);
+    const size = parseFloat(document.getElementById('pricePerSquareMeter').value);
     const yearsButton = document.querySelector('.year-btn.active');
     const years = yearsButton ? parseInt(yearsButton.getAttribute('data-years')) : 0;
 
@@ -174,7 +174,6 @@ function calculateBuyOption() {
 
     if (overallSlider && overallSlider.disabled) {
         // If individual sliders are used
-        print("individuell slider igång")
         for (let i = 1; i <= years; i++) {
             const individualSlider = document.getElementById(`returnRate${i}`);
             if (individualSlider) {
@@ -188,7 +187,6 @@ function calculateBuyOption() {
     } else if (overallSlider) {
         // If overall slider is used
         returnRate = parseFloat(overallSlider.value) / 100;
-        print(returnRate)
         if (isNaN(returnRate)) {
             alert('Var god fyll i avkastningsslidern först.');
             return;
@@ -206,14 +204,45 @@ function calculateBuyOption() {
 function calculateRentOption() {
     const monthlyRent = parseFloat(document.getElementById('monthlyRent').value);
     const deposit = parseFloat(document.getElementById('deposit').value);
+    const yearsButton = document.querySelector('.year-btn.active');
+    const years = yearsButton ? parseInt(yearsButton.getAttribute('data-years')) : 0;
 
-    if (isNaN(monthlyRent) || isNaN(deposit)) {
+    if (isNaN(monthlyRent) || isNaN(deposit) || years === 0) {
         alert('Var god fyll i alla fält korrekt.');
         return;
     }
 
-    // Placeholder logic for calculations
-    const futureValueRent = (monthlyRent * deposit) * Math.pow((1 + 0.05), 10); // Assuming 5% annual investment return
+    let futureValueRent = 0;
+    let annualSavings = 0;
+    let returnRate;
+    const overallSlider = document.getElementById('overallReturnRate');
+
+    if (overallSlider && overallSlider.disabled) {
+        for (let i = 1; i <= years; i++) {
+            const individualSlider = document.getElementById(`returnRate${i}`);
+            if (individualSlider) {
+                returnRate = parseFloat(individualSlider.value) / 100;
+                annualSavings = (monthlyRent * 12) * (1 + returnRate);
+                futureValueRent += annualSavings;
+            } else {
+                alert(`Var god fyll i avkastning för år ${i}.`);
+                return;
+            }
+        }
+    } else if (overallSlider) {
+        returnRate = parseFloat(overallSlider.value) / 100;
+        if (isNaN(returnRate)) {
+            alert('Var god fyll i avkastningsslidern först.');
+            return;
+        }
+        for (let i = 1; i <= years; i++) {
+            annualSavings = (monthlyRent * 12) * (1 + returnRate);
+            futureValueRent += annualSavings;
+        }
+    } else {
+        alert('Var god välj avkastningsslidern först.');
+        return;
+    }
 
     document.getElementById('rentResult').textContent = `Framtida värde: ${futureValueRent.toFixed(2)} kr`;
     document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
