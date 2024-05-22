@@ -16,7 +16,7 @@ document.querySelectorAll('.year-btn').forEach(button => {
     button.addEventListener('click', function() {
         toggleActiveYearButton(this);
         const years = parseInt(this.getAttribute('data-years'));
-        showReturnRateSliders(years);
+        showOverallReturnRateSlider(years);
     });
 });
 
@@ -70,9 +70,46 @@ document.getElementById('calculateBtn').addEventListener('click', function() {
     }
 });
 
-function showReturnRateSliders(years) {
+function showOverallReturnRateSlider(years) {
     const returnRatesDiv = document.getElementById('returnRates');
     returnRatesDiv.innerHTML = '';
+
+    const label = document.createElement('label');
+    label.textContent = `Avkastning för ${years} år:`;
+
+    const overallSlider = document.createElement('input');
+    overallSlider.type = 'range';
+    overallSlider.min = '0';
+    overallSlider.max = '20';
+    overallSlider.step = '0.1';
+    overallSlider.id = `overallReturnRate`;
+    overallSlider.name = `overallReturnRate`;
+
+    const span = document.createElement('span');
+    span.id = `overallReturnRateValue`;
+    span.textContent = '0';
+
+    overallSlider.addEventListener('input', function() {
+        span.textContent = this.value;
+    });
+
+    overallSlider.addEventListener('click', function() {
+        this.disabled = true;
+        this.style.backgroundColor = '#ccc';
+        showIndividualReturnRateSliders(years, parseFloat(this.value));
+    });
+
+    returnRatesDiv.appendChild(label);
+    returnRatesDiv.appendChild(overallSlider);
+    returnRatesDiv.appendChild(span);
+    returnRatesDiv.appendChild(document.createElement('br'));
+
+    returnRatesDiv.classList.remove('hidden');
+}
+
+function showIndividualReturnRateSliders(years, overallRate) {
+    const returnRatesDiv = document.getElementById('returnRates');
+
     for (let i = 1; i <= years; i++) {
         const label = document.createElement('label');
         label.textContent = `Avkastning år ${i}:`;
@@ -84,10 +121,11 @@ function showReturnRateSliders(years) {
         slider.step = '0.1';
         slider.id = `returnRate${i}`;
         slider.name = `returnRate${i}`;
+        slider.value = overallRate;
 
         const span = document.createElement('span');
         span.id = `returnRateValue${i}`;
-        span.textContent = '0';
+        span.textContent = overallRate;
 
         slider.addEventListener('input', function() {
             span.textContent = this.value;
@@ -98,7 +136,6 @@ function showReturnRateSliders(years) {
         returnRatesDiv.appendChild(span);
         returnRatesDiv.appendChild(document.createElement('br'));
     }
-    returnRatesDiv.classList.remove('hidden');
 }
 
 function calculateBuyOption() {
