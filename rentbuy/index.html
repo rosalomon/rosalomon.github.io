@@ -14,6 +14,10 @@
             <button id="buyBtn" class="choice-btn">Bostadsrätt</button>
             <button id="rentBtn" class="choice-btn">Hyresrätt</button>
         </div>
+        <div class="location-section hidden" id="locationSection">
+            <button class="location-btn" data-location="goteborg">Göteborg</button>
+            <button class="location-btn" data-location="vastra-gotaland">Västra Götaland</button>
+        </div>
         <div class="years-section hidden" id="yearsSection">
             <button class="year-btn" data-years="1">1 år</button>
             <button class="year-btn" data-years="2">2 år</button>
@@ -39,8 +43,8 @@
                 <input type="range" id="loanToValue" name="loanToValue" min="0" max="100" step="1">
                 <span id="loanToValueValue">0</span>%
                 
-                <label for="pricePerSquareMeter">Pris per kvadratmeter:</label>
-                <input type="number" id="pricePerSquareMeter" name="pricePerSquareMeter">
+                <label for="size">Bostadens storlek (kvm):</label>
+                <input type="number" id="size" name="size">
             </div>
             
             <!-- Hyresrätt fält -->
@@ -51,6 +55,9 @@
                 <label for="deposit">Deposition (antal månadshyror):</label>
                 <input type="range" id="deposit" name="deposit" min="0" max="5" step="0.1">
                 <span id="depositValue">0</span> månadshyror
+                
+                <label for="initialInvestment">Initial investering:</label>
+                <input type="number" id="initialInvestment" name="initialInvestment">
             </div>
             
             <div id="returnRates" class="hidden">

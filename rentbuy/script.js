@@ -1,9 +1,14 @@
 document.addEventListener('DOMContentLoaded', function() {
+    const göteborgYearlyRent = 1321;
+    const västraGötalandYearlyRent = 1227;
+    let selectedLocation = null;
+
     document.getElementById('buyBtn').addEventListener('click', function() {
         toggleActiveButton('buyBtn');
         showInputs('buyInputs');
         document.getElementById('yearsSection').classList.remove('hidden');
         document.getElementById('returnRates').classList.add('hidden');
+        document.getElementById('locationSection').classList.remove('hidden');
     });
 
     document.getElementById('rentBtn').addEventListener('click', function() {
@@ -11,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
         showInputs('rentInputs');
         document.getElementById('yearsSection').classList.add('hidden');
         document.getElementById('returnRates').classList.add('hidden');
+        document.getElementById('locationSection').classList.remove('hidden');
     });
 
     document.querySelectorAll('.year-btn').forEach(button => {
@@ -18,6 +24,13 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleActiveYearButton(this);
             const years = parseInt(this.getAttribute('data-years'));
             showOverallReturnRateSlider(years);
+        });
+    });
+
+    document.querySelectorAll('.location-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            toggleActiveLocationButton(this);
+            selectedLocation = this.getAttribute('data-location');
         });
     });
 
@@ -34,6 +47,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function toggleActiveYearButton(activeButton) {
         const buttons = document.querySelectorAll('.year-btn');
+        buttons.forEach(button => {
+            if (button === activeButton) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        });
+    }
+
+    function toggleActiveLocationButton(activeButton) {
+        const buttons = document.querySelectorAll('.location-btn');
         buttons.forEach(button => {
             if (button === activeButton) {
                 button.classList.add('active');
@@ -160,11 +184,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const monthlyFee = parseFloat(document.getElementById('monthlyFee').value);
         const interestRate = parseFloat(document.getElementById('interestRate').value) / 100;
         const loanToValue = parseFloat(document.getElementById('loanToValue').value) / 100;
-        const size = parseFloat(document.getElementById('pricePerSquareMeter').value);
+        const size = parseFloat(document.getElementById('size').value);
         const yearsButton = document.querySelector('.year-btn.active');
         const years = yearsButton ? parseInt(yearsButton.getAttribute('data-years')) : 0;
 
-        if (isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(size) || years === 0) {
+        if (isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(size) || years === 0 || !selectedLocation) {
             alert('Var god fyll i alla fält korrekt.');
             return;
         }
@@ -198,6 +222,13 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        const yearlyRent = selectedLocation === 'goteborg' ? göteborgYearlyRent : västraGötalandYearlyRent;
+        const calculatedMonthlyRent = (yearlyRent * size) / 12;
+        const initialInvestment = purchasePrice * (1 - loanToValue);
+
+        document.getElementById('monthlyRent').value = calculatedMonthlyRent.toFixed(2);
+        document.getElementById('initialInvestment').value = initialInvestment.toFixed(2);
+
         document.getElementById('buyResult').textContent = `Framtida värde: ${futureValueBuy.toFixed(2)} kr`;
         document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
     }
@@ -205,15 +236,16 @@ document.addEventListener('DOMContentLoaded', function() {
     function calculateRentOption() {
         const monthlyRent = parseFloat(document.getElementById('monthlyRent').value);
         const deposit = parseFloat(document.getElementById('deposit').value);
+        const initialInvestment = parseFloat(document.getElementById('initialInvestment').value);
         const yearsButton = document.querySelector('.year-btn.active');
         const years = yearsButton ? parseInt(yearsButton.getAttribute('data-years')) : 0;
 
-        if (isNaN(monthlyRent) || isNaN(deposit) || years === 0) {
+        if (isNaN(monthlyRent) || isNaN(deposit) || isNaN(initialInvestment) || years === 0) {
             alert('Var god fyll i alla fält korrekt.');
             return;
         }
 
-        let futureValueRent = 0;
+        let futureValueRent = initialInvestment;
         let annualSavings = 0;
         let returnRate;
         const overallSlider = document.getElementById('overallReturnRate');

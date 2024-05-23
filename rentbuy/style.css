@@ -26,13 +26,13 @@ h2 {
     margin-bottom: 20px;
 }
 
-.choice-section, .years-section {
+.choice-section, .years-section, .location-section {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
 }
 
-.choice-btn, .year-btn {
+.choice-btn, .year-btn, .location-btn {
     padding: 10px 20px;
     margin: 0 10px;
     border: 1px solid #ccc;
@@ -42,7 +42,7 @@ h2 {
     transition: background-color 0.3s, color 0.3s;
 }
 
-.choice-btn.active, .year-btn.active {
+.choice-btn.active, .year-btn.active, .location-btn.active {
     background-color: #007bff;
     color: #fff;
     border: none;
