@@ -1,15 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const göteborgYearlyRent = 1321;
-    const västraGötalandYearlyRent = 1227;
-    let selectedLocation = null;
-
-    document.querySelectorAll('.location-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            toggleActiveLocationButton(this);
-            selectedLocation = this.getAttribute('data-location');
-        });
-    });
-
+    const yearlyRentPerSquareMeter = 1321; // Standardvärde för Göteborg
     document.querySelectorAll('.year-btn').forEach(button => {
         button.addEventListener('click', function() {
             toggleActiveYearButton(this);
@@ -47,17 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function toggleActiveLocationButton(activeButton) {
-        const buttons = document.querySelectorAll('.location-btn');
-        buttons.forEach(button => {
-            if (button === activeButton) {
-                button.classList.add('active');
-            } else {
-                button.classList.remove('active');
-            }
-        });
-    }
-
     function calculateValues() {
         const purchasePrice = parseFloat(document.getElementById('purchasePrice').value);
         const monthlyFee = parseFloat(document.getElementById('monthlyFee').value);
@@ -71,13 +50,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const yearsButton = document.querySelector('.year-btn.active');
         const years = yearsButton ? parseInt(yearsButton.getAttribute('data-years')) : 0;
 
-        if (isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(size) || isNaN(overallReturnRate) || isNaN(stockReturnRate) || years === 0 || !selectedLocation) {
+        if (isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(size) || isNaN(overallReturnRate) || isNaN(stockReturnRate) || years === 0) {
             alert('Var god fyll i alla fält korrekt.');
             return;
         }
 
-        const yearlyRent = selectedLocation === 'goteborg' ? göteborgYearlyRent : västraGötalandYearlyRent;
-        const calculatedMonthlyRent = (yearlyRent * size) / 12;
+        const calculatedMonthlyRent = (yearlyRentPerSquareMeter * size) / 12;
         if (isNaN(monthlyRent) || monthlyRent === 0) {
             monthlyRent = calculatedMonthlyRent;
         }
