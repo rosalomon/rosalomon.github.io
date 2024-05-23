@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             for (let i = 1; i <= years; i++) {
                 const label = document.createElement('label');
-                label.textContent = `${type === 'overall' ? 'Bostadens' : 'Börsplaceringens'} värdeökning år ${i}:`;
+                label.textContent = `${type === 'overall' ? 'Värdeökningen' : 'Avkastningen'} år ${i}:`;
 
                 const slider = document.createElement('input');
                 slider.type = 'range';
