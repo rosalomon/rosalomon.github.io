@@ -26,6 +26,14 @@ document.addEventListener('DOMContentLoaded', function() {
         calculateValues();
     });
 
+    document.getElementById('overallReturnRateArrow').addEventListener('click', function() {
+        toggleIndividualSliders('overall');
+    });
+
+    document.getElementById('stockReturnRateArrow').addEventListener('click', function() {
+        toggleIndividualSliders('stock');
+    });
+
     function toggleActiveYearButton(activeButton) {
         const buttons = document.querySelectorAll('.year-btn');
         buttons.forEach(button => {
@@ -35,6 +43,58 @@ document.addEventListener('DOMContentLoaded', function() {
                 button.classList.remove('active');
             }
         });
+    }
+
+    function toggleIndividualSliders(type) {
+        const yearsButton = document.querySelector('.year-btn.active');
+        const years = yearsButton ? parseInt(yearsButton.getAttribute('data-years')) : 0;
+        const container = type === 'overall' ? document.getElementById('individualOverallReturnRates') : document.getElementById('individualStockReturnRates');
+        const arrowButton = type === 'overall' ? document.getElementById('overallReturnRateArrow') : document.getElementById('stockReturnRateArrow');
+        const mainSlider = type === 'overall' ? document.getElementById('overallReturnRate') : document.getElementById('stockReturnRate');
+        const mainSliderValue = type === 'overall' ? parseFloat(document.getElementById('overallReturnRate').value) : parseFloat(document.getElementById('stockReturnRate').value);
+
+        if (years === 0) {
+            alert('Välj antal år först.');
+            return;
+        }
+
+        if (container.classList.contains('hidden')) {
+            container.classList.remove('hidden');
+            container.innerHTML = '';
+
+            for (let i = 1; i <= years; i++) {
+                const label = document.createElement('label');
+                label.textContent = `${type === 'overall' ? 'Bostadens' : 'Börsplaceringens'} värdeökning år ${i}:`;
+
+                const slider = document.createElement('input');
+                slider.type = 'range';
+                slider.min = '0';
+                slider.max = '20';
+                slider.step = '0.1';
+                slider.value = mainSliderValue;
+                slider.classList.add(`${type}-individual-return-rate`);
+
+                const span = document.createElement('span');
+                span.textContent = mainSliderValue;
+
+                slider.addEventListener('input', function() {
+                    span.textContent = this.value;
+                });
+
+                container.appendChild(label);
+                container.appendChild(slider);
+                container.appendChild(span);
+                container.appendChild(document.createElement('br'));
+            }
+
+            arrowButton.textContent = '▲';
+            mainSlider.disabled = true;
+        } else {
+            container.classList.add('hidden');
+            container.innerHTML = '';
+            arrowButton.textContent = '▼';
+            mainSlider.disabled = false;
+        }
     }
 
     function calculateValues() {
@@ -71,15 +131,31 @@ document.addEventListener('DOMContentLoaded', function() {
         let futureValueRent = initialInvestment;
 
         // Beräkna framtida värde för bostadsrätt
-        futureValueBuy = purchasePrice * Math.pow((1 + overallReturnRate), years);
+        const individualOverallRates = document.querySelectorAll('.overall-individual-return-rate');
+        if (individualOverallRates.length > 0) {
+            individualOverallRates.forEach((slider, index) => {
+                futureValueBuy *= (1 + parseFloat(slider.value) / 100);
+            });
+        } else {
+            futureValueBuy = purchasePrice * Math.pow((1 + overallReturnRate), years);
+        }
 
         // Beräkna framtida värde för hyresrätt och börsplacering
         futureValueRent = initialInvestment * Math.pow((1 + stockReturnRate), years);
         const monthlyInvestment = monthlyRent;
         const periods = years * 12;
 
-        for (let i = 1; i <= periods; i++) {
-            futureValueRent += monthlyInvestment * Math.pow((1 + stockReturnRate / 12), periods - i);
+        const individualStockRates = document.querySelectorAll('.stock-individual-return-rate');
+        if (individualStockRates.length > 0) {
+            for (let i = 1; i <= periods; i++) {
+                const year = Math.ceil(i / 12);
+                const rate = parseFloat(individualStockRates[year - 1].value) / 100;
+                futureValueRent += monthlyInvestment * Math.pow((1 + rate / 12), periods - i);
+            }
+        } else {
+            for (let i = 1; i <= periods; i++) {
+                futureValueRent += monthlyInvestment * Math.pow((1 + stockReturnRate / 12), periods - i);
+            }
         }
 
         document.getElementById('buyResult').textContent = `Framtida värde: ${futureValueBuy.toFixed(2)} kr`;

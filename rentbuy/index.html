@@ -51,12 +51,16 @@
                 <label for="overallReturnRate">Bostadens värdeökning per år (%):</label>
                 <input type="range" id="overallReturnRate" name="overallReturnRate" min="0" max="20" step="0.1">
                 <span id="overallReturnRateValue">0</span>%
+                <button id="overallReturnRateArrow" class="arrow-btn">▼</button>
             </div>
+            <div id="individualOverallReturnRates" class="hidden"></div>
             <div>
                 <label for="stockReturnRate">Börsplaceringens avkastning per år (%):</label>
                 <input type="range" id="stockReturnRate" name="stockReturnRate" min="0" max="20" step="0.1">
                 <span id="stockReturnRateValue">0</span>%
+                <button id="stockReturnRateArrow" class="arrow-btn">▼</button>
             </div>
+            <div id="individualStockReturnRates" class="hidden"></div>
             <div>
                 <label for="initialInvestment">Initial börsinvestering:</label>
                 <input type="number" id="initialInvestment" name="initialInvestment">
