@@ -69,6 +69,15 @@ input[type="number"] {
     border-radius: 5px;
 }
 
+.inline-inputs {
+    display: flex;
+    justify-content: space-between;
+}
+
+.inline-inputs > div {
+    width: 48%;
+}
+
 input[type="range"] {
     -webkit-appearance: none;
     appearance: none;

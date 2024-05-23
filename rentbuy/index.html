@@ -10,15 +10,11 @@
     <div class="container">
         <h1>Hyra eller köpa?</h1>
         <h2>Investera i en bostad eller hyra och placera skillnaden på börsen</h2>
-        <div class="choice-section">
-            <button id="buyBtn" class="choice-btn">Bostadsrätt</button>
-            <button id="rentBtn" class="choice-btn">Hyresrätt</button>
-        </div>
-        <div class="location-section hidden" id="locationSection">
+        <div class="location-section" id="locationSection">
             <button class="location-btn" data-location="goteborg">Göteborg</button>
             <button class="location-btn" data-location="vastra-gotaland">Västra Götaland</button>
         </div>
-        <div class="years-section hidden" id="yearsSection">
+        <div class="years-section" id="yearsSection">
             <button class="year-btn" data-years="1">1 år</button>
             <button class="year-btn" data-years="2">2 år</button>
             <button class="year-btn" data-years="3">3 år</button>
@@ -27,43 +23,44 @@
         </div>
         <div class="input-section" id="inputSection">
             <h2>Fyll i dina uppgifter</h2>
-            <!-- Bostadsrätt fält -->
-            <div id="buyInputs" class="hidden">
+            <div>
                 <label for="purchasePrice">Köpeskilling:</label>
                 <input type="number" id="purchasePrice" name="purchasePrice">
-                
-                <label for="monthlyFee">Avgift per månad:</label>
-                <input type="number" id="monthlyFee" name="monthlyFee">
-                
-                <label for="interestRate">Ränta (%):</label>
-                <input type="range" id="interestRate" name="interestRate" min="0" max="10" step="0.1">
-                <span id="interestRateValue">0</span>%
-                
-                <label for="loanToValue">Belåningsgrad (%):</label>
-                <input type="range" id="loanToValue" name="loanToValue" min="0" max="100" step="1">
-                <span id="loanToValueValue">0</span>%
-                
+            </div>
+            <div class="inline-inputs">
+                <div>
+                    <label for="monthlyFee">Avgift:</label>
+                    <input type="number" id="monthlyFee" name="monthlyFee">
+                </div>
+                <div>
+                    <label for="monthlyRent">Månadshyra:</label>
+                    <input type="number" id="monthlyRent" name="monthlyRent">
+                </div>
+            </div>
+            <div>
                 <label for="size">Bostadens storlek (kvm):</label>
                 <input type="number" id="size" name="size">
             </div>
-            
-            <!-- Hyresrätt fält -->
-            <div id="rentInputs" class="hidden">
-                <label for="monthlyRent">Månadshyra:</label>
-                <input type="number" id="monthlyRent" name="monthlyRent">
-                
-                <label for="deposit">Deposition (antal månadshyror):</label>
-                <input type="range" id="deposit" name="deposit" min="0" max="5" step="0.1">
-                <span id="depositValue">0</span> månadshyror
-                
-                <label for="initialInvestment">Initial investering:</label>
-                <input type="number" id="initialInvestment" name="initialInvestment">
+            <div>
+                <label for="interestRate">Ränta bolån (%):</label>
+                <input type="range" id="interestRate" name="interestRate" min="0" max="10" step="0.1">
+                <span id="interestRateValue">0</span>%
             </div>
-            
-            <div id="returnRates" class="hidden">
-                <!-- Sliders for return rates will be dynamically added here -->
+            <div>
+                <label for="loanToValue">Belåningsgrad (%):</label>
+                <input type="range" id="loanToValue" name="loanToValue" min="0" max="100" step="1">
+                <span id="loanToValueValue">0</span>%
             </div>
-            
+            <div>
+                <label for="overallReturnRate">Bostadens värdeökning per år (%):</label>
+                <input type="range" id="overallReturnRate" name="overallReturnRate" min="0" max="20" step="0.1">
+                <span id="overallReturnRateValue">0</span>%
+            </div>
+            <div>
+                <label for="stockReturnRate">Börsplaceringens avkastning per år (%):</label>
+                <input type="range" id="stockReturnRate" name="stockReturnRate" min="0" max="20" step="0.1">
+                <span id="stockReturnRateValue">0</span>%
+            </div>
             <button id="calculateBtn">Beräkna</button>
         </div>
         <div class="result-section" id="resultSection">
