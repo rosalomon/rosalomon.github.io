@@ -61,33 +61,47 @@ document.addEventListener('DOMContentLoaded', function() {
     function calculateValues() {
         const purchasePrice = parseFloat(document.getElementById('purchasePrice').value);
         const monthlyFee = parseFloat(document.getElementById('monthlyFee').value);
-        const monthlyRent = parseFloat(document.getElementById('monthlyRent').value);
+        let monthlyRent = parseFloat(document.getElementById('monthlyRent').value);
         const interestRate = parseFloat(document.getElementById('interestRate').value) / 100;
         const loanToValue = parseFloat(document.getElementById('loanToValue').value) / 100;
         const size = parseFloat(document.getElementById('size').value);
         const overallReturnRate = parseFloat(document.getElementById('overallReturnRate').value) / 100;
         const stockReturnRate = parseFloat(document.getElementById('stockReturnRate').value) / 100;
+        const initialInvestmentField = document.getElementById('initialInvestment');
         const yearsButton = document.querySelector('.year-btn.active');
         const years = yearsButton ? parseInt(yearsButton.getAttribute('data-years')) : 0;
 
-        if (isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(monthlyRent) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(size) || isNaN(overallReturnRate) || isNaN(stockReturnRate) || years === 0 || !selectedLocation) {
+        if (isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(size) || isNaN(overallReturnRate) || isNaN(stockReturnRate) || years === 0 || !selectedLocation) {
             alert('Var god fyll i alla fält korrekt.');
             return;
         }
 
         const yearlyRent = selectedLocation === 'goteborg' ? göteborgYearlyRent : västraGötalandYearlyRent;
         const calculatedMonthlyRent = (yearlyRent * size) / 12;
-        if (isNaN(monthlyRent)) {
+        if (isNaN(monthlyRent) || monthlyRent === 0) {
             monthlyRent = calculatedMonthlyRent;
         }
 
-        const initialInvestment = purchasePrice * (1 - loanToValue);
+        let initialInvestment = purchasePrice * (1 - loanToValue);
+        if (!initialInvestmentField.value || initialInvestmentField.value === '') {
+            initialInvestmentField.value = initialInvestment.toFixed(2);
+        } else {
+            initialInvestment = parseFloat(initialInvestmentField.value);
+        }
+
         let futureValueBuy = purchasePrice;
         let futureValueRent = initialInvestment;
 
-        for (let i = 1; i <= years; i++) {
-            futureValueBuy = futureValueBuy * (1 + overallReturnRate);
-            futureValueRent = futureValueRent * (1 + stockReturnRate) + (monthlyRent * 12);
+        // Beräkna framtida värde för bostadsrätt
+        futureValueBuy = purchasePrice * Math.pow((1 + overallReturnRate), years);
+
+        // Beräkna framtida värde för hyresrätt och börsplacering
+        futureValueRent = initialInvestment * Math.pow((1 + stockReturnRate), years);
+        const monthlyInvestment = monthlyRent;
+        const periods = years * 12;
+
+        for (let i = 1; i <= periods; i++) {
+            futureValueRent += monthlyInvestment * Math.pow((1 + stockReturnRate / 12), periods - i);
         }
 
         document.getElementById('buyResult').textContent = `Framtida värde: ${futureValueBuy.toFixed(2)} kr`;
