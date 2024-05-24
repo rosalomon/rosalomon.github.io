@@ -183,14 +183,11 @@ button:hover {
     background: #0056b3;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 400px) {
     .container {
         padding: 10px;
     }
 
-    .inline-inputs, .inline-inputs-separate {
-        flex-direction: column;
-    }
 
     .result-section {
         flex-direction: row;
@@ -199,15 +196,14 @@ button:hover {
 
     .result-box {
         width: calc(50% - 10px);
+    
     }
-}
-
-@media (min-width: 350) {
+    
     .result-section {
         flex-direction: row;
     }
-
-    .result-box {
-        width: calc(50% - 10px);
-    }
 }
+
+
+
+
