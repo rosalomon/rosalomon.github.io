@@ -197,3 +197,7 @@ button:hover {
 .arrow-btn:hover {
     background: #0056b3;
 }
+
+.inline-inputs {
+    margin-bottom: 20px; /* Increase this value to add more space between sliders */
+}
