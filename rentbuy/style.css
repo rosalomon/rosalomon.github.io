@@ -72,15 +72,33 @@ input[type="number"] {
 .inline-inputs {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .inline-inputs > div {
-    width: calc(48% - 5px); /* Adjust the width and add margin for spacing */
+    display: flex;
+    align-items: center;
+}
+
+.slider-container {
+    flex: 7;
+    display: flex;
+    align-items: center;
+}
+
+.slider-container label {
     margin-right: 10px;
 }
 
-.inline-inputs > div:last-child {
-    margin-right: 0; /* Remove the margin for the last element */
+.slider-container input[type="range"] {
+    flex: 1;
+}
+
+.checkbox-container {
+    flex: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 input[type="range"] {
