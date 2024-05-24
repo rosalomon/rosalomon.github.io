@@ -71,14 +71,14 @@ input[type="number"] {
     box-sizing: border-box;
 }
 
-.inline-inputs {
+.inline-inputs, .inline-inputs-separate {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 20px;
 }
 
-.inline-inputs > div {
+.inline-inputs > div, .inline-inputs-separate > div {
     flex: 1;
 }
 
@@ -190,11 +190,11 @@ button:hover {
         width: 48%;
     }
 
-    .inline-inputs {
+    .inline-inputs, .inline-inputs-separate {
         flex-direction: row;
     }
 
-    .inline-inputs > div {
+    .inline-inputs > div, .inline-inputs-separate > div {
         margin-bottom: 0;
     }
 }
