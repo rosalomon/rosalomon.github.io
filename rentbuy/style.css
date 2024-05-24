@@ -148,17 +148,20 @@ button:hover {
 
 .result-section {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-between;
     gap: 20px;
     margin-top: 20px;
 }
 
 .result-box {
+    flex: 1;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #fafafa;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
 }
 
 .result-box h3 {
@@ -180,21 +183,21 @@ button:hover {
     background: #0056b3;
 }
 
-@media (min-width: 768px) {
-    .result-section {
-        flex-direction: row;
-        justify-content: space-between;
-    }
-
-    .result-box {
-        width: 48%;
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
     }
 
     .inline-inputs, .inline-inputs-separate {
-        flex-direction: row;
+        flex-direction: column;
     }
 
-    .inline-inputs > div, .inline-inputs-separate > div {
-        margin-bottom: 0;
+    .result-section {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .result-box {
+        width: calc(50% - 10px);
     }
 }
