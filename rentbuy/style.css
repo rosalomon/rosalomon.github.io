@@ -6,12 +6,13 @@ body {
 }
 
 .container {
-    width: 80%;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 20px;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin-top: 50px;
+    box-sizing: border-box;
 }
 
 h1 {
@@ -62,37 +63,22 @@ label {
 }
 
 input[type="number"] {
-    width: calc(100% - 10px); /* Adjust the width to prevent overflow */
+    width: calc(100% - 20px); /* Adjust the width to prevent overflow */
     padding: 10px;
     margin-bottom: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    box-sizing: border-box;
 }
 
 .inline-inputs {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px; /* Increase this value to add more space between sliders */
+    align-items: flex-start;
+    gap: 20px;
 }
 
 .inline-inputs > div {
-    display: flex;
-    align-items: center;
-    flex: 1;
-}
-
-.slider-container {
-    flex: 1;
-    display: flex;
-    align-items: center;
-}
-
-.slider-container label {
-    margin-right: 10px;
-}
-
-.slider-container input[type="range"] {
     flex: 1;
 }
 
@@ -162,11 +148,12 @@ button:hover {
 
 .result-section {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
 }
 
 .result-box {
-    width: 48%;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -191,4 +178,23 @@ button:hover {
 
 .arrow-btn:hover {
     background: #0056b3;
+}
+
+@media (min-width: 768px) {
+    .result-section {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .result-box {
+        width: 48%;
+    }
+
+    .inline-inputs {
+        flex-direction: row;
+    }
+
+    .inline-inputs > div {
+        margin-bottom: 0;
+    }
 }
