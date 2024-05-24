@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const yearlyRentPerSquareMeter = 1321; // Standardvärde för Göteborg
+
     document.querySelectorAll('.year-btn').forEach(button => {
         button.addEventListener('click', function() {
             toggleActiveYearButton(this);
@@ -68,8 +69,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const slider = document.createElement('input');
                 slider.type = 'range';
-                slider.min = '0';
-                slider.max = '20';
+                slider.min = '-100';
+                slider.max = '100';
                 slider.step = '0.1';
                 slider.value = mainSliderValue;
                 slider.classList.add(`${type}-individual-return-rate`);
