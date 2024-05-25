@@ -175,11 +175,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
         document.getElementById('buyResult').innerHTML = `
             <p>Framtida värdet ${years} år: ${futureValueBuy.toFixed(2)} kr</p>
-            <p>Utvecklingen i kronor per år: ${(futureValueBuy / years).toFixed(2)} kr</p>
+           
         `;
         document.getElementById('rentResult').innerHTML = `
             <p>Framtida värdet ${years} år: ${futureValue.toFixed(2)} kr</p>
-            <p>Total räntekostnad: ${totalInterestPaid.toFixed(2)} kr</p>
+           
         `;
         document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
     }
