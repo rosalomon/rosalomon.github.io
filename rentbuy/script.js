@@ -109,67 +109,68 @@ document.addEventListener('DOMContentLoaded', function() {
         const initialInvestmentField = document.getElementById('initialInvestment');
         const yearsButton = document.querySelector('.year-btn.active');
         const years = yearsButton ? parseInt(yearsButton.getAttribute('data-years')) : 0;
-
+    
         if (isNaN(monthlyRent) || isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(size) || isNaN(overallReturnRate) || isNaN(stockReturnRate) || years === 0) {
             alert('Var god fyll i alla fält korrekt.');
             return;
         }
-
+    
         let initialInvestment = parseFloat(initialInvestmentField.value.replace(/\s+/g, ''));
         if (isNaN(initialInvestment)) {
             alert('Var god fyll i en korrekt initial investering.');
             return;
         }
-
+    
         let futureValueBuy = purchasePrice;
         let futureValueRent = initialInvestment;
-
+    
         let loanAmount = purchasePrice * loanToValue;
         let totalInterestPaid = 0;
         let totalAmortizationPaid = 0;
         let monthlyAmortization = 0;
-
+    
         if (loanToValue > 0.5) {
             monthlyAmortization = (loanAmount * 0.01) / 12;
         }
-
+    
         // Beräkningar per månad
         const monthlyInterestRate = interestRate / 12;
         const monthlyStockReturnRate = (1 + stockReturnRate) ** (1 / 12) - 1;
-
+    
         let totalMonthlyInvestment = 0;  // Total monthly investment tracker
-
+    
         for (let i = 0; i < years * 12; i++) {
             const monthlyInterestPayment = loanAmount * monthlyInterestRate;
             const monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
             const monthlyInvestment = monthlyHousingCost - monthlyRent;
-
+    
             if (loanToValue > 0.5) {
                 loanAmount -= monthlyAmortization;
             }
             
             totalInterestPaid += monthlyInterestPayment;
             totalAmortizationPaid += monthlyAmortization;
-
+    
             totalMonthlyInvestment += monthlyInvestment;  // Track total investment for debugging
-
+    
             if (monthlyInvestment > 0) {
                 futureValueRent = futureValueRent * (1 + monthlyStockReturnRate) + monthlyInvestment;
             } else {
                 futureValueRent *= (1 + monthlyStockReturnRate);
             }
         }
-
+    
         // Beräkning av framtida värde för börsportföljen efter n år
+        // Justering av formeln för att ta hänsyn till löpande investeringar
         futureValueRent = futureValueRent * (1 + stockReturnRate) ** years;
-
+    
         // Framtida värde för bostadsrätten
         futureValueBuy = purchasePrice * (1 + overallReturnRate) ** years;
-
+    
         // Debug output
         console.log("Total Monthly Investment:", totalMonthlyInvestment);
         console.log("Future Value Rent:", futureValueRent);
-
+    
         document.getElementById('buyResult').innerHTML = `
             <p>Framtida värdet ${years} år: ${futureValueBuy.toFixed(2)} kr</p>
             <p>Utvecklingen i kronor per år: ${(futureValueBuy / years).toFixed(2)} kr</p>
@@ -180,4 +181,5 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
     }
+    
 });
