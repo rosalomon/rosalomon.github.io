@@ -137,10 +137,9 @@ document.addEventListener('DOMContentLoaded', function() {
             futureValueBuy = purchasePrice * Math.pow((1 + overallReturnRate), years);
         }
 
-        // Beräkna räntekostnad
+        // Beräkna räntekostnad och amortering över tid
         let loanAmount = purchasePrice * loanToValue;
         let totalInterestPaid = 0;
-        let totalAmortizationPaid = 0;
 
         for (let i = 0; i < years * 12; i++) {
             const monthlyInterestPayment = (loanAmount * interestRate) / 12;
@@ -162,17 +161,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
             loanAmount -= monthlyAmortization;
             totalInterestPaid += monthlyInterestPayment;
-            totalAmortizationPaid += monthlyAmortization;
 
             const monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
             const monthlyInvestment = monthlyHousingCost - monthlyRent;
 
+            // Beräkna framtida värde för hyresrätt och börsplacering
             if (monthlyInvestment > 0) {
-                futureValueRent += monthlyInvestment * Math.pow((1 + stockReturnRate / 12), years * 12 - i);
+                futureValueRent = initialInvestment;
+                const periods = years * 12;
+
+                const individualStockRates = document.querySelectorAll('.stock-individual-return-rate');
+                if (individualStockRates.length > 0) {
+                    for (let i = 1; i <= periods; i++) {
+                        const year = Math.ceil(i / 12);
+                        const rate = parseFloat(individualStockRates[year - 1].value) / 100;
+                        futureValueRent += monthlyInvestment * Math.pow((1 + rate / 12), periods - i);
+                    }
+                } else {
+                    for (let i = 1; i <= periods; i++) {
+                        futureValueRent += monthlyInvestment * Math.pow((1 + stockReturnRate / 12), periods - i);
+                    }
+                }
+            } else {
+                futureValueRent = initialInvestment * Math.pow((1 + stockReturnRate), years);
             }
         }
-
-        futureValueRent = initialInvestment * Math.pow((1 + stockReturnRate), years);
 
         document.getElementById('buyResult').innerHTML = `
             <p>Framtida värdet ${years} år: ${futureValueBuy.toFixed(2)} kr</p>
