@@ -112,15 +112,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const yearsButton = document.querySelector('.year-btn.active');
         const years = yearsButton ? parseInt(yearsButton.getAttribute('data-years')) : 0;
 
-        if (isNaN(monthlyRent) || isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(size) || isNaN(overallReturnRate) || isNaN(stockReturnRate) || years === 0) {
+        if (isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(size) || isNaN(overallReturnRate) || isNaN(stockReturnRate) || years === 0) {
             alert('Var god fyll i alla fält korrekt.');
             return;
         }
 
-        /*const calculatedMonthlyRent = (yearlyRentPerSquareMeter * size) / 12;
+        const calculatedMonthlyRent = (yearlyRentPerSquareMeter * size) / 12;
         if (isNaN(monthlyRent) || monthlyRent === 0) {
             monthlyRent = calculatedMonthlyRent;
-        }*/
+        }
 
         let initialInvestment = purchasePrice * (1 - loanToValue);
         if (!initialInvestmentField.value || initialInvestmentField.value === '') {
