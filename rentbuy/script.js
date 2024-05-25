@@ -127,31 +127,23 @@ document.addEventListener('DOMContentLoaded', function() {
         let loanAmount = purchasePrice * loanToValue;
         let totalInterestPaid = 0;
         let totalAmortizationPaid = 0;
+        let monthlyAmortization = 0;
+
+        if (loanToValue > 0.5) {
+            monthlyAmortization = (loanAmount * 0.01) / 12;
+        }
 
         for (let i = 0; i < years * 12; i++) {
             const monthlyInterestPayment = (loanAmount * interestRate) / 12;
-            let monthlyAmortization = 0;
-
-            if (strictAmortization) {
-                if (loanToValue > 0.7) {
-                    monthlyAmortization = (loanAmount * 0.03) / 12;
-                } else if (loanToValue > 0.5) {
-                    monthlyAmortization = (loanAmount * 0.02) / 12;
-                }
-            } else {
-                if (loanToValue > 0.7) {
-                    monthlyAmortization = (loanAmount * 0.02) / 12;
-                } else if (loanToValue > 0.5) {
-                    monthlyAmortization = (loanAmount * 0.01) / 12;
-                }
-            }
-
-            loanAmount -= monthlyAmortization;
-            totalInterestPaid += monthlyInterestPayment;
-            totalAmortizationPaid += monthlyAmortization;
-
             const monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
             const monthlyInvestment = monthlyHousingCost - monthlyRent;
+
+            if (loanToValue > 0.5) {
+                loanAmount -= monthlyAmortization;
+            }
+            
+            totalInterestPaid += monthlyInterestPayment;
+            totalAmortizationPaid += monthlyAmortization;
 
             if (monthlyInvestment > 0) {
                 const individualStockRates = document.querySelectorAll('.stock-individual-return-rate');
@@ -179,11 +171,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.getElementById('buyResult').innerHTML = `
             <p>Framtida värdet ${years} år: ${futureValueBuy.toFixed(2)} kr</p>
-            
+            <p>Utvecklingen i kronor per år: ${(futureValueBuy / years).toFixed(2)} kr</p>
         `;
         document.getElementById('rentResult').innerHTML = `
             <p>Framtida värdet ${years} år: ${futureValueRent.toFixed(2)} kr</p>
-           
+            <p>Total räntekostnad: ${totalInterestPaid.toFixed(2)} kr</p>
         `;
         document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
     }
