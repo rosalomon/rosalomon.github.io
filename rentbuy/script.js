@@ -161,25 +161,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     
         // Beräkning av framtida värde för börsportföljen efter n år
-        // Justering av formeln för att ta hänsyn till löpande investeringar
-        futureValueRent = futureValueRent * (1 + stockReturnRate) ** years;
+        // Korrekt formel för att ta hänsyn till löpande investeringar
+        const monthlyInvestment = totalMonthlyInvestment / (years * 12);
+        const months = years * 12;
+        const futureValue = (monthlyInvestment * (((1 + monthlyStockReturnRate) ** months - 1) / monthlyStockReturnRate)) * (1 + monthlyStockReturnRate);
     
         // Framtida värde för bostadsrätten
         futureValueBuy = purchasePrice * (1 + overallReturnRate) ** years;
     
         // Debug output
         console.log("Total Monthly Investment:", totalMonthlyInvestment);
-        console.log("Future Value Rent:", futureValueRent);
+        console.log("Future Value Rent:", futureValue);
     
         document.getElementById('buyResult').innerHTML = `
             <p>Framtida värdet ${years} år: ${futureValueBuy.toFixed(2)} kr</p>
             <p>Utvecklingen i kronor per år: ${(futureValueBuy / years).toFixed(2)} kr</p>
         `;
         document.getElementById('rentResult').innerHTML = `
-            <p>Framtida värdet ${years} år: ${futureValueRent.toFixed(2)} kr</p>
+            <p>Framtida värdet ${years} år: ${futureValue.toFixed(2)} kr</p>
             <p>Total räntekostnad: ${totalInterestPaid.toFixed(2)} kr</p>
         `;
         document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
     }
+    
     
 });
