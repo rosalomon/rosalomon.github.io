@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const yearlyRentPerSquareMeter = 1321; // Standardvärde för Göteborg
-
     document.querySelectorAll('.year-btn').forEach(button => {
         button.addEventListener('click', function() {
             toggleActiveYearButton(this);
@@ -155,7 +153,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
             const monthlyInvestment = monthlyHousingCost - monthlyRent;
 
-            // Future value calculations
             if (monthlyInvestment > 0) {
                 const individualStockRates = document.querySelectorAll('.stock-individual-return-rate');
                 if (individualStockRates.length > 0) {
@@ -169,10 +166,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Calculate the future value of initial investment
-        futureValueRent *= Math.pow((1 + stockReturnRate), years);
+        futureValueRent += initialInvestment * Math.pow((1 + stockReturnRate), years);
 
-        // Calculate the future value of buying property
         const individualOverallRates = document.querySelectorAll('.overall-individual-return-rate');
         if (individualOverallRates.length > 0) {
             individualOverallRates.forEach((slider) => {
@@ -184,11 +179,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.getElementById('buyResult').innerHTML = `
             <p>Framtida värdet ${years} år: ${futureValueBuy.toFixed(2)} kr</p>
-            <p>Utvecklingen i kronor per år: ${(futureValueBuy / years).toFixed(2)} kr</p>
+            
         `;
         document.getElementById('rentResult').innerHTML = `
             <p>Framtida värdet ${years} år: ${futureValueRent.toFixed(2)} kr</p>
-            <p>Total räntekostnad: ${totalInterestPaid.toFixed(2)} kr</p>
+           
         `;
         document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
     }
