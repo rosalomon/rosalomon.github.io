@@ -155,6 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
             const monthlyInvestment = monthlyHousingCost - monthlyRent;
 
+            // Future value calculations
             if (monthlyInvestment > 0) {
                 const individualStockRates = document.querySelectorAll('.stock-individual-return-rate');
                 if (individualStockRates.length > 0) {
@@ -168,16 +169,26 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        futureValueRent += initialInvestment * Math.pow((1 + stockReturnRate), years);
+        // Calculate the future value of initial investment
+        futureValueRent *= Math.pow((1 + stockReturnRate), years);
+
+        // Calculate the future value of buying property
+        const individualOverallRates = document.querySelectorAll('.overall-individual-return-rate');
+        if (individualOverallRates.length > 0) {
+            individualOverallRates.forEach((slider) => {
+                futureValueBuy *= (1 + parseFloat(slider.value) / 100);
+            });
+        } else {
+            futureValueBuy = purchasePrice * Math.pow((1 + overallReturnRate), years);
+        }
 
         document.getElementById('buyResult').innerHTML = `
             <p>Framtida värdet ${years} år: ${futureValueBuy.toFixed(2)} kr</p>
             <p>Utvecklingen i kronor per år: ${(futureValueBuy / years).toFixed(2)} kr</p>
-            <p>Total räntekostnad: ${totalInterestPaid.toFixed(2)} kr</p>
-
         `;
         document.getElementById('rentResult').innerHTML = `
             <p>Framtida värdet ${years} år: ${futureValueRent.toFixed(2)} kr</p>
+            <p>Total räntekostnad: ${totalInterestPaid.toFixed(2)} kr</p>
         `;
         document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
     }
