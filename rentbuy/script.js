@@ -112,14 +112,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const yearsButton = document.querySelector('.year-btn.active');
         const years = yearsButton ? parseInt(yearsButton.getAttribute('data-years')) : 0;
 
-        if (isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(size) || isNaN(overallReturnRate) || isNaN(stockReturnRate) || years === 0) {
+        if (isNaN(monthlyRent) || isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(size) || isNaN(overallReturnRate) || isNaN(stockReturnRate) || years === 0) {
             alert('Var god fyll i alla fält korrekt.');
             return;
-        }
-
-        const calculatedMonthlyRent = (yearlyRentPerSquareMeter * size) / 12;
-        if (isNaN(monthlyRent) || monthlyRent === 0) {
-            monthlyRent = calculatedMonthlyRent;
         }
 
         let initialInvestment = purchasePrice * (1 - loanToValue);
@@ -143,48 +138,50 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Beräkna räntekostnad
-        const loanAmount = purchasePrice * loanToValue;
-        const monthlyInterestPayment = (loanAmount * interestRate) / 12;
+        let loanAmount = purchasePrice * loanToValue;
+        let totalInterestPaid = 0;
+        let totalAmortizationPaid = 0;
 
-        // Beräkna amortering
-        let monthlyAmortization = 0;
-        if (strictAmortization) {
-            if (loanToValue > 0.7) {
-                monthlyAmortization = (loanAmount * 0.03) / 12;
-            } else if (loanToValue > 0.5) {
-                monthlyAmortization = (loanAmount * 0.02) / 12;
-            }
-        } else {
-            if (loanToValue > 0.7) {
-                monthlyAmortization = (loanAmount * 0.02) / 12;
-            } else if (loanToValue > 0.5) {
-                monthlyAmortization = (loanAmount * 0.01) / 12;
-            }
-        }
+        for (let i = 0; i < years * 12; i++) {
+            const monthlyInterestPayment = (loanAmount * interestRate) / 12;
+            let monthlyAmortization = 0;
 
-        const monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
-        const monthlyInvestment = monthlyHousingCost - monthlyRent;
-
-        // Beräkna framtida värde för hyresrätt och börsplacering
-        if (monthlyInvestment > 0) {
-            futureValueRent = initialInvestment;
-            const periods = years * 12;
-
-            const individualStockRates = document.querySelectorAll('.stock-individual-return-rate');
-            if (individualStockRates.length > 0) {
-                for (let i = 1; i <= years; i++) {
-                    const rate = parseFloat(individualStockRates[i - 1].value) / 100;
-                    futureValueRent *= (1 + rate);
+            if (strictAmortization) {
+                if (loanToValue > 0.7) {
+                    monthlyAmortization = (loanAmount * 0.03) / 12;
+                } else if (loanToValue > 0.5) {
+                    monthlyAmortization = (loanAmount * 0.02) / 12;
                 }
             } else {
-                futureValueRent = initialInvestment * Math.pow((1 + stockReturnRate), years);
+                if (loanToValue > 0.7) {
+                    monthlyAmortization = (loanAmount * 0.02) / 12;
+                } else if (loanToValue > 0.5) {
+                    monthlyAmortization = (loanAmount * 0.01) / 12;
+                }
             }
-        } else {
-            futureValueRent = initialInvestment * Math.pow((1 + stockReturnRate), years);
+
+            loanAmount -= monthlyAmortization;
+            totalInterestPaid += monthlyInterestPayment;
+            totalAmortizationPaid += monthlyAmortization;
+
+            const monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
+            const monthlyInvestment = monthlyHousingCost - monthlyRent;
+
+            if (monthlyInvestment > 0) {
+                futureValueRent += monthlyInvestment * Math.pow((1 + stockReturnRate / 12), years * 12 - i);
+            }
         }
 
-        document.getElementById('buyResult').textContent = `Framtida värde: ${futureValueBuy.toFixed(2)} kr`;
-        document.getElementById('rentResult').textContent = `Framtida värde: ${futureValueRent.toFixed(2)} kr`;
+        futureValueRent = initialInvestment * Math.pow((1 + stockReturnRate), years);
+
+        document.getElementById('buyResult').innerHTML = `
+            <p>Framtida värdet ${years} år: ${futureValueBuy.toFixed(2)} kr</p>
+            <p>Utvecklingen i kronor per år: ${(futureValueBuy / years).toFixed(2)} kr</p>
+        `;
+        document.getElementById('rentResult').innerHTML = `
+            <p>Framtida värdet ${years} år: ${futureValueRent.toFixed(2)} kr</p>
+            <p>Total räntekostnad: ${totalInterestPaid.toFixed(2)} kr</p>
+        `;
         document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
     }
 });
