@@ -99,9 +99,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function calculateValues() {
-        const purchasePrice = parseFloat(document.getElementById('purchasePrice').value);
-        const monthlyFee = parseFloat(document.getElementById('monthlyFee').value);
-        let monthlyRent = parseFloat(document.getElementById('monthlyRent').value);
+        const purchasePrice = parseFloat(document.getElementById('purchasePrice').value.replace(/\s+/g, ''));
+        const monthlyFee = parseFloat(document.getElementById('monthlyFee').value.replace(/\s+/g, ''));
+        let monthlyRent = parseFloat(document.getElementById('monthlyRent').value.replace(/\s+/g, ''));
         const interestRate = parseFloat(document.getElementById('interestRate').value) / 100;
         const loanToValue = parseFloat(document.getElementById('loanToValue').value) / 100;
         const size = parseFloat(document.getElementById('size').value);
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!initialInvestmentField.value || initialInvestmentField.value === '') {
             initialInvestmentField.value = initialInvestment.toFixed(2);
         } else {
-            initialInvestment = parseFloat(initialInvestmentField.value);
+            initialInvestment = parseFloat(initialInvestmentField.value.replace(/\s+/g, ''));
         }
 
         let futureValueBuy = purchasePrice;
@@ -149,11 +149,17 @@ document.addEventListener('DOMContentLoaded', function() {
         // Beräkna amortering
         let monthlyAmortization = 0;
         if (strictAmortization) {
-            monthlyAmortization = (loanAmount * 0.03) / 12;
-        } else if (loanToValue > 0.7) {
-            monthlyAmortization = (loanAmount * 0.02) / 12;
-        } else if (loanToValue > 0.5) {
-            monthlyAmortization = (loanAmount * 0.01) / 12;
+            if (loanToValue > 0.7) {
+                monthlyAmortization = (loanAmount * 0.03) / 12;
+            } else if (loanToValue > 0.5) {
+                monthlyAmortization = (loanAmount * 0.02) / 12;
+            }
+        } else {
+            if (loanToValue > 0.7) {
+                monthlyAmortization = (loanAmount * 0.02) / 12;
+            } else if (loanToValue > 0.5) {
+                monthlyAmortization = (loanAmount * 0.01) / 12;
+            }
         }
 
         const monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
@@ -161,19 +167,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Beräkna framtida värde för hyresrätt och börsplacering
         if (monthlyInvestment > 0) {
+            futureValueRent = initialInvestment;
             const periods = years * 12;
 
             const individualStockRates = document.querySelectorAll('.stock-individual-return-rate');
             if (individualStockRates.length > 0) {
-                for (let i = 1; i <= periods; i++) {
-                    const year = Math.ceil(i / 12);
-                    const rate = parseFloat(individualStockRates[year - 1].value) / 100;
-                    futureValueRent += monthlyInvestment * Math.pow((1 + rate / 12), periods - i);
+                for (let i = 1; i <= years; i++) {
+                    const rate = parseFloat(individualStockRates[i - 1].value) / 100;
+                    futureValueRent *= (1 + rate);
                 }
             } else {
-                for (let i = 1; i <= periods; i++) {
-                    futureValueRent += monthlyInvestment * Math.pow((1 + stockReturnRate / 12), periods - i);
-                }
+                futureValueRent = initialInvestment * Math.pow((1 + stockReturnRate), years);
             }
         } else {
             futureValueRent = initialInvestment * Math.pow((1 + stockReturnRate), years);
