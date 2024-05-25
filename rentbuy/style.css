@@ -201,7 +201,7 @@ button:hover {
     }
 
     .inline-inputs, .inline-inputs-separate {
-        flex-direction: column;
+        flex-direction: row
     }
 
     .result-section {
@@ -214,12 +214,5 @@ button:hover {
     }
 }
 
-@media (min-width: 350px) {
-    .result-section {
-        flex-direction: row;
-    }
 
-    .result-box {
-        width: calc(50% - 10px);
-    }
-}
+
