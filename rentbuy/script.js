@@ -158,6 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let totalInterestPaid = 0;
         let totalAmortizationPaid = 0;
 
+        let totalMonthlyInvestment = 0;
         for (let i = 0; i < years * 12; i++) {
             const monthlyInterestPayment = (loanAmount * interestRate) / 12;
             let monthlyAmortization = 0;
@@ -185,21 +186,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
             console.log(`Month ${i + 1} - Loan Amount: ${loanAmount}, Monthly Housing Cost: ${monthlyHousingCost}, Monthly Investment: ${monthlyInvestment}`);
 
-            // Beräkna framtida värde för hyresrätt och börsplacering
             if (monthlyInvestment > 0) {
-                const individualStockRates = document.querySelectorAll('.stock-individual-return-rate');
-                if (individualStockRates.length > 0) {
-                    for (let j = 0; j < individualStockRates.length; j++) {
-                        const rate = parseFloat(individualStockRates[j].value) / 100;
-                        futureValueRent += monthlyInvestment * Math.pow((1 + rate / 12), years * 12 - i);
-                    }
-                } else {
-                    futureValueRent += monthlyInvestment * Math.pow((1 + stockReturnRate / 12), years * 12 - i);
-                }
+                totalMonthlyInvestment += monthlyInvestment;
             }
         }
 
-        futureValueRent += initialInvestment * Math.pow((1 + stockReturnRate), years);
+        // Använd annuitetsformeln för att beräkna framtida värde
+        futureValueRent += totalMonthlyInvestment * (Math.pow((1 + stockReturnRate / 12), years * 12) - 1) / (stockReturnRate / 12);
 
         console.log("Future Value Rent:", futureValueRent);
 
