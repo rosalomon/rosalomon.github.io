@@ -6,6 +6,17 @@ body {
     box-sizing: border-box;
 }
 
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+.wrapper {
+    background-color: #f5f5f5;
+    padding: 10px;
+}
+
 .container {
     max-width: 1000px;
     margin: 0 auto;
@@ -40,13 +51,14 @@ h2 {
     border: 1px solid #ccc;
     border-radius: 5px;
     cursor: pointer;
-    background-color: #f5f5f5;
+    background-color: #e0e0e0; /* Light grey background */
+    color: #555; /* Darker grey text */
     transition: background-color 0.3s, color 0.3s;
 }
 
 .choice-btn.active, .year-btn.active, .location-btn.active {
-    background-color: #007bff;
-    color: #fff;
+    background-color: #007bff; /* Blue background */
+    color: #fff; /* White text */
     border: none;
 }
 
@@ -183,11 +195,14 @@ button:hover {
     background: #0056b3;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 768px) {
     .container {
         padding: 10px;
     }
 
+    .inline-inputs, .inline-inputs-separate {
+        flex-direction: column;
+    }
 
     .result-section {
         flex-direction: row;
@@ -196,14 +211,15 @@ button:hover {
 
     .result-box {
         width: calc(50% - 10px);
-    
-    }
-    
-    .result-section {
-        flex-direction: row;
     }
 }
 
+@media (min-width: 769px) {
+    .result-section {
+        flex-direction: row;
+    }
 
-
-
+    .result-box {
+        width: calc(50% - 10px);
+    }
+}
