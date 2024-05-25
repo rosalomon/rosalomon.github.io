@@ -133,8 +133,12 @@ document.addEventListener('DOMContentLoaded', function() {
             monthlyAmortization = (loanAmount * 0.01) / 12;
         }
 
+        // Beräkningar per månad
+        const monthlyInterestRate = interestRate / 12;
+        const monthlyStockReturnRate = (1 + stockReturnRate) ** (1 / 12) - 1;
+
         for (let i = 0; i < years * 12; i++) {
-            const monthlyInterestPayment = (loanAmount * interestRate) / 12;
+            const monthlyInterestPayment = loanAmount * monthlyInterestRate;
             const monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
             const monthlyInvestment = monthlyHousingCost - monthlyRent;
 
@@ -146,28 +150,17 @@ document.addEventListener('DOMContentLoaded', function() {
             totalAmortizationPaid += monthlyAmortization;
 
             if (monthlyInvestment > 0) {
-                const individualStockRates = document.querySelectorAll('.stock-individual-return-rate');
-                if (individualStockRates.length > 0) {
-                    for (let j = 0; j < individualStockRates.length; j++) {
-                        const rate = parseFloat(individualStockRates[j].value) / 100;
-                        futureValueRent += monthlyInvestment * Math.pow((1 + rate / 12), years * 12 - i);
-                    }
-                } else {
-                    futureValueRent += monthlyInvestment * Math.pow((1 + stockReturnRate / 12), years * 12 - i);
-                }
+                futureValueRent = futureValueRent * (1 + monthlyStockReturnRate) + monthlyInvestment;
+            } else {
+                futureValueRent *= (1 + monthlyStockReturnRate);
             }
         }
 
-        futureValueRent += initialInvestment * Math.pow((1 + stockReturnRate), years);
+        // Beräkning av framtida värde för börsportföljen efter n år
+        futureValueRent = futureValueRent * (1 + stockReturnRate) ** years;
 
-        const individualOverallRates = document.querySelectorAll('.overall-individual-return-rate');
-        if (individualOverallRates.length > 0) {
-            individualOverallRates.forEach((slider) => {
-                futureValueBuy *= (1 + parseFloat(slider.value) / 100);
-            });
-        } else {
-            futureValueBuy = purchasePrice * Math.pow((1 + overallReturnRate), years);
-        }
+        // Framtida värde för bostadsrätten
+        futureValueBuy = purchasePrice * (1 + overallReturnRate) ** years;
 
         document.getElementById('buyResult').innerHTML = `
             <p>Framtida värdet ${years} år: ${futureValueBuy.toFixed(2)} kr</p>
