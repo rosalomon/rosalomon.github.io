@@ -117,43 +117,15 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        console.log("Input Values:");
-        console.log("Purchase Price:", purchasePrice);
-        console.log("Monthly Fee:", monthlyFee);
-        console.log("Monthly Rent:", monthlyRent);
-        console.log("Interest Rate:", interestRate);
-        console.log("Loan to Value:", loanToValue);
-        console.log("Size:", size);
-        console.log("Overall Return Rate:", overallReturnRate);
-        console.log("Stock Return Rate:", stockReturnRate);
-        console.log("Strict Amortization:", strictAmortization);
-        console.log("Years:", years);
-
-        let initialInvestment = purchasePrice * (1 - loanToValue);
-        if (!initialInvestmentField.value || initialInvestmentField.value === '') {
-            initialInvestmentField.value = initialInvestment.toFixed(2);
-        } else {
-            initialInvestment = parseFloat(initialInvestmentField.value.replace(/\s+/g, ''));
+        let initialInvestment = parseFloat(initialInvestmentField.value.replace(/\s+/g, ''));
+        if (isNaN(initialInvestment)) {
+            alert('Var god fyll i en korrekt initial investering.');
+            return;
         }
-
-        console.log("Initial Investment:", initialInvestment);
 
         let futureValueBuy = purchasePrice;
         let futureValueRent = initialInvestment;
 
-        // Beräkna framtida värde för bostadsrätt
-        const individualOverallRates = document.querySelectorAll('.overall-individual-return-rate');
-        if (individualOverallRates.length > 0) {
-            individualOverallRates.forEach((slider, index) => {
-                futureValueBuy *= (1 + parseFloat(slider.value) / 100);
-            });
-        } else {
-            futureValueBuy = purchasePrice * Math.pow((1 + overallReturnRate), years);
-        }
-
-        console.log("Future Value Buy:", futureValueBuy);
-
-        // Beräkna räntekostnad och amortering över tid
         let loanAmount = purchasePrice * loanToValue;
         let totalInterestPaid = 0;
         let totalAmortizationPaid = 0;
@@ -183,9 +155,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
             const monthlyInvestment = monthlyHousingCost - monthlyRent;
 
-            console.log(`Month ${i + 1} - Loan Amount: ${loanAmount}, Monthly Housing Cost: ${monthlyHousingCost}, Monthly Investment: ${monthlyInvestment}`);
-
-            // Beräkna framtida värde för hyresrätt och börsplacering
             if (monthlyInvestment > 0) {
                 const individualStockRates = document.querySelectorAll('.stock-individual-return-rate');
                 if (individualStockRates.length > 0) {
@@ -201,15 +170,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         futureValueRent += initialInvestment * Math.pow((1 + stockReturnRate), years);
 
-        console.log("Future Value Rent:", futureValueRent);
-
         document.getElementById('buyResult').innerHTML = `
             <p>Framtida värdet ${years} år: ${futureValueBuy.toFixed(2)} kr</p>
             <p>Utvecklingen i kronor per år: ${(futureValueBuy / years).toFixed(2)} kr</p>
+            <p>Total räntekostnad: ${totalInterestPaid.toFixed(2)} kr</p>
+
         `;
         document.getElementById('rentResult').innerHTML = `
             <p>Framtida värdet ${years} år: ${futureValueRent.toFixed(2)} kr</p>
-            <p>Total räntekostnad: ${totalInterestPaid.toFixed(2)} kr</p>
         `;
         document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
     }
