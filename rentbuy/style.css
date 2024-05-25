@@ -214,7 +214,7 @@ button:hover {
     }
 }
 
-@media (min-width: 769px) {
+@media (min-width: 350px) {
     .result-section {
         flex-direction: row;
     }
