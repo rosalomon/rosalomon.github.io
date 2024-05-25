@@ -137,6 +137,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const monthlyInterestRate = interestRate / 12;
         const monthlyStockReturnRate = (1 + stockReturnRate) ** (1 / 12) - 1;
 
+        let totalMonthlyInvestment = 0;  // Total monthly investment tracker
+
         for (let i = 0; i < years * 12; i++) {
             const monthlyInterestPayment = loanAmount * monthlyInterestRate;
             const monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
@@ -148,6 +150,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             totalInterestPaid += monthlyInterestPayment;
             totalAmortizationPaid += monthlyAmortization;
+
+            totalMonthlyInvestment += monthlyInvestment;  // Track total investment for debugging
 
             if (monthlyInvestment > 0) {
                 futureValueRent = futureValueRent * (1 + monthlyStockReturnRate) + monthlyInvestment;
@@ -161,6 +165,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Framtida värde för bostadsrätten
         futureValueBuy = purchasePrice * (1 + overallReturnRate) ** years;
+
+        // Debug output
+        console.log("Total Monthly Investment:", totalMonthlyInvestment);
+        console.log("Future Value Rent:", futureValueRent);
 
         document.getElementById('buyResult').innerHTML = `
             <p>Framtida värdet ${years} år: ${futureValueBuy.toFixed(2)} kr</p>
