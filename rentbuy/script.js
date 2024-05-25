@@ -157,23 +157,26 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
+        const monthlyInvestment = monthlyHousingCost - monthlyRent;
 
         // Beräkna framtida värde för hyresrätt och börsplacering
-        futureValueRent = initialInvestment * Math.pow((1 + stockReturnRate), years);
-        const monthlyInvestment = monthlyHousingCost - monthlyRent;
-        const periods = years * 12;
+        if (monthlyInvestment > 0) {
+            const periods = years * 12;
 
-        const individualStockRates = document.querySelectorAll('.stock-individual-return-rate');
-        if (individualStockRates.length > 0) {
-            for (let i = 1; i <= periods; i++) {
-                const year = Math.ceil(i / 12);
-                const rate = parseFloat(individualStockRates[year - 1].value) / 100;
-                futureValueRent += monthlyInvestment * Math.pow((1 + rate / 12), periods - i);
+            const individualStockRates = document.querySelectorAll('.stock-individual-return-rate');
+            if (individualStockRates.length > 0) {
+                for (let i = 1; i <= periods; i++) {
+                    const year = Math.ceil(i / 12);
+                    const rate = parseFloat(individualStockRates[year - 1].value) / 100;
+                    futureValueRent += monthlyInvestment * Math.pow((1 + rate / 12), periods - i);
+                }
+            } else {
+                for (let i = 1; i <= periods; i++) {
+                    futureValueRent += monthlyInvestment * Math.pow((1 + stockReturnRate / 12), periods - i);
+                }
             }
         } else {
-            for (let i = 1; i <= periods; i++) {
-                futureValueRent += monthlyInvestment * Math.pow((1 + stockReturnRate / 12), periods - i);
-            }
+            futureValueRent = initialInvestment * Math.pow((1 + stockReturnRate), years);
         }
 
         document.getElementById('buyResult').textContent = `Framtida värde: ${futureValueBuy.toFixed(2)} kr`;
