@@ -117,12 +117,26 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        console.log("Input Values:");
+        console.log("Purchase Price:", purchasePrice);
+        console.log("Monthly Fee:", monthlyFee);
+        console.log("Monthly Rent:", monthlyRent);
+        console.log("Interest Rate:", interestRate);
+        console.log("Loan to Value:", loanToValue);
+        console.log("Size:", size);
+        console.log("Overall Return Rate:", overallReturnRate);
+        console.log("Stock Return Rate:", stockReturnRate);
+        console.log("Strict Amortization:", strictAmortization);
+        console.log("Years:", years);
+
         let initialInvestment = purchasePrice * (1 - loanToValue);
         if (!initialInvestmentField.value || initialInvestmentField.value === '') {
             initialInvestmentField.value = initialInvestment.toFixed(2);
         } else {
             initialInvestment = parseFloat(initialInvestmentField.value.replace(/\s+/g, ''));
         }
+
+        console.log("Initial Investment:", initialInvestment);
 
         let futureValueBuy = purchasePrice;
         let futureValueRent = initialInvestment;
@@ -137,9 +151,12 @@ document.addEventListener('DOMContentLoaded', function() {
             futureValueBuy = purchasePrice * Math.pow((1 + overallReturnRate), years);
         }
 
+        console.log("Future Value Buy:", futureValueBuy);
+
         // Beräkna räntekostnad och amortering över tid
         let loanAmount = purchasePrice * loanToValue;
         let totalInterestPaid = 0;
+        let totalAmortizationPaid = 0;
 
         for (let i = 0; i < years * 12; i++) {
             const monthlyInterestPayment = (loanAmount * interestRate) / 12;
@@ -161,31 +178,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
             loanAmount -= monthlyAmortization;
             totalInterestPaid += monthlyInterestPayment;
+            totalAmortizationPaid += monthlyAmortization;
 
             const monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
             const monthlyInvestment = monthlyHousingCost - monthlyRent;
 
+            console.log(`Month ${i + 1} - Loan Amount: ${loanAmount}, Monthly Housing Cost: ${monthlyHousingCost}, Monthly Investment: ${monthlyInvestment}`);
+
             // Beräkna framtida värde för hyresrätt och börsplacering
             if (monthlyInvestment > 0) {
-                futureValueRent = initialInvestment;
-                const periods = years * 12;
-
                 const individualStockRates = document.querySelectorAll('.stock-individual-return-rate');
                 if (individualStockRates.length > 0) {
-                    for (let i = 1; i <= periods; i++) {
-                        const year = Math.ceil(i / 12);
-                        const rate = parseFloat(individualStockRates[year - 1].value) / 100;
-                        futureValueRent += monthlyInvestment * Math.pow((1 + rate / 12), periods - i);
+                    for (let j = 0; j < individualStockRates.length; j++) {
+                        const rate = parseFloat(individualStockRates[j].value) / 100;
+                        futureValueRent += monthlyInvestment * Math.pow((1 + rate / 12), years * 12 - i);
                     }
                 } else {
-                    for (let i = 1; i <= periods; i++) {
-                        futureValueRent += monthlyInvestment * Math.pow((1 + stockReturnRate / 12), periods - i);
-                    }
+                    futureValueRent += monthlyInvestment * Math.pow((1 + stockReturnRate / 12), years * 12 - i);
                 }
-            } else {
-                futureValueRent = initialInvestment * Math.pow((1 + stockReturnRate), years);
             }
         }
+
+        futureValueRent += initialInvestment * Math.pow((1 + stockReturnRate), years);
+
+        console.log("Future Value Rent:", futureValueRent);
 
         document.getElementById('buyResult').innerHTML = `
             <p>Framtida värdet ${years} år: ${futureValueBuy.toFixed(2)} kr</p>
