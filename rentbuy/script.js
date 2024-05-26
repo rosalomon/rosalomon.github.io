@@ -202,10 +202,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
         // Korrekt formel för att ta hänsyn till löpande investeringar och initial investering
         const months = years * 12;
-        const futureValue = futureValueRent * ((1 + monthlyStockReturnRate) ** months) +
-            (totalMonthlyInvestment * ((1 + monthlyStockReturnRate) ** months - 1) / monthlyStockReturnRate);
+        const futureValue = futureValueRent + (totalMonthlyInvestment * ((1 + monthlyStockReturnRate) ** months - 1) / monthlyStockReturnRate);
     
-        console.log("Initial investment future value contribution:", futureValueRent * ((1 + monthlyStockReturnRate) ** months));
+        console.log("Initial investment future value contribution:", futureValueRent);
         console.log("Monthly investment future value contribution:", (totalMonthlyInvestment * ((1 + monthlyStockReturnRate) ** months - 1) / monthlyStockReturnRate));
     
         // Framtida värde för bostadsrätten
@@ -223,6 +222,6 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
     }
-    
+       
     
 });
