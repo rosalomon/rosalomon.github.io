@@ -99,134 +99,118 @@ document.addEventListener('DOMContentLoaded', function() {
         // Hämta och logga alla användarens inmatningsvärden
         const purchasePrice = parseFloat(document.getElementById('purchasePrice').value.replace(/\s+/g, ''));
         console.log("Köpeskilling:", purchasePrice);
-
+    
         const monthlyFee = parseFloat(document.getElementById('monthlyFee').value.replace(/\s+/g, ''));
         console.log("Månadsavgift:", monthlyFee);
-
+    
         let monthlyRent = parseFloat(document.getElementById('monthlyRent').value.replace(/\s+/g, ''));
         console.log("Månadshyra:", monthlyRent);
-
+    
         const interestRate = parseFloat(document.getElementById('interestRate').value) / 100;
         console.log("Ränta bolån (%):", interestRate);
-
+    
         const loanToValue = parseFloat(document.getElementById('loanToValue').value) / 100;
         console.log("Belåningsgrad (%):", loanToValue);
-
+    
         const size = parseFloat(document.getElementById('size').value);
         console.log("Storlek:", size);
-
+    
         const overallReturnRate = parseFloat(document.getElementById('overallReturnRate').value) / 100;
         console.log("Bostadens värdeökning - genomsnitt:", overallReturnRate);
-
+    
         const stockReturnRate = parseFloat(document.getElementById('stockReturnRate').value) / 100;
         console.log("Portföljens värdeökning - genomsnitt:", stockReturnRate);
-
+    
         const strictAmortization = document.getElementById('strictAmortization').checked;
         console.log("Skärpt amorteringskrav:", strictAmortization);
-
+    
         const initialInvestmentField = document.getElementById('initialInvestment');
         const initialInvestment = parseFloat(initialInvestmentField.value.replace(/\s+/g, ''));
         console.log("Initial investering:", initialInvestment);
-
+    
         const yearsButton = document.querySelector('.year-btn.active');
         const years = yearsButton ? parseInt(yearsButton.getAttribute('data-years')) : 0;
         console.log("Tidshorisont (år):", years);
-
+    
         if (isNaN(monthlyRent) || isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(size) || isNaN(overallReturnRate) || isNaN(stockReturnRate) || years === 0) {
             alert('Var god fyll i alla fält korrekt.');
             return;
         }
-
+    
         if (isNaN(initialInvestment)) {
             alert('Var god fyll i en korrekt initial investering.');
             return;
         }
-
+    
         let futureValueBuy = purchasePrice;
         let futureValueRent = initialInvestment;
         console.log("Initial futureValueRent:", futureValueRent);
-
+    
         let loanAmount = purchasePrice * loanToValue;
         let totalInterestPaid = 0;
         let totalAmortizationPaid = 0;
         let monthlyAmortization = 0;
-
+    
         if (loanToValue > 0.5) {
             monthlyAmortization = (loanAmount * 0.01) / 12;
         }
-
+    
         if (loanToValue > 0.7) {
             monthlyAmortization = (loanAmount * 0.02) / 12;
         }
-
+    
         if (strictAmortization) {
             monthlyAmortization += (loanAmount * 0.01) / 12;
         }
-
+    
         // Beräkningar per månad
         const monthlyInterestRate = interestRate / 12;
         const monthlyStockReturnRate = (1 + stockReturnRate) ** (1 / 12) - 1;
-
+    
         console.log("Månatlig bolåneränta:", monthlyInterestRate);
         console.log("Månatlig portföljavkastning:", monthlyStockReturnRate);
-
+    
         let totalMonthlyInvestment = 0;  // Total monthly investment tracker
         let totalFutureValueRent = initialInvestment; // För att spåra det totala framtida värdet av renten
-
-        // Hämta individuella avkastningsvärden
-        const individualOverallReturnRates = document.querySelectorAll('.overall-individual-return-rate');
-        const individualStockReturnRates = document.querySelectorAll('.stock-individual-return-rate');
-
-        // Flaggor för att avgöra om vi använder individuella avkastningsvärden
-        const useIndividualOverallReturns = individualOverallReturnRates.length === years;
-        const useIndividualStockReturns = individualStockReturnRates.length === years;
-
+    
         for (let i = 0; i < years * 12; i++) {
             const monthlyInterestPayment = loanAmount * monthlyInterestRate;
             const monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
             const monthlyInvestment = monthlyHousingCost - monthlyRent;
-
+    
             if (loanToValue > 0.5) {
                 loanAmount -= monthlyAmortization;
             }
-
+    
             totalInterestPaid += monthlyInterestPayment;
             totalAmortizationPaid += monthlyAmortization;
-
+    
             totalMonthlyInvestment += monthlyInvestment;  // Track total investment for debugging
-
+    
             console.log(`Månad ${i + 1}:`);
             console.log("  Månatlig räntebetalning:", monthlyInterestPayment);
             console.log("  Månatlig bostadskostnad:", monthlyHousingCost);
             console.log("  Månatlig investering:", monthlyInvestment);
-
-            // Hämta årsindividuella avkastningsvärden om de används
-            let currentMonthlyStockReturnRate = monthlyStockReturnRate;
-            if (useIndividualStockReturns) {
-                const yearIndex = Math.floor(i / 12);
-                const yearlyStockReturnRate = parseFloat(individualStockReturnRates[yearIndex].value) / 100;
-                currentMonthlyStockReturnRate = (1 + yearlyStockReturnRate) ** (1 / 12) - 1;
-            }
-
+    
             // Uppdatera totalFutureValueRent med den månatliga investeringen och avkastningen
             if (monthlyInvestment > 0) {
-                totalFutureValueRent = totalFutureValueRent * (1 + currentMonthlyStockReturnRate) + monthlyInvestment;
+                totalFutureValueRent = totalFutureValueRent * (1 + monthlyStockReturnRate) + monthlyInvestment;
             } else {
-                totalFutureValueRent *= (1 + currentMonthlyStockReturnRate);
+                totalFutureValueRent *= (1 + monthlyStockReturnRate);
             }
             console.log("  Uppdaterad futureValueRent:", totalFutureValueRent);
         }
-
+    
         // Korrekt formel för att ta hänsyn till löpande investeringar och initial investering
         const futureValue = totalFutureValueRent; // Eftersom totalFutureValueRent redan inkluderar den initiala investeringen och månatliga investeringar med avkastning
-
+    
         // Framtida värde för bostadsrätten
         futureValueBuy = purchasePrice * (1 + overallReturnRate) ** years;
-
+    
         // Debug output
         console.log("Total Monthly Investment:", totalMonthlyInvestment);
         console.log("Future Value Rent:", futureValue);
-
+    
         document.getElementById('buyResult').innerHTML = `
             <p>Framtida värdet ${years} år: ${futureValueBuy.toFixed(2)} kr</p>
         `;
@@ -235,6 +219,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
     }
+    
     
     
 });
