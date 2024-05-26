@@ -95,7 +95,6 @@ document.addEventListener('DOMContentLoaded', function() {
             mainSlider.disabled = false;
         }
     }
-
     function calculateValues() {
         // Hämta och logga alla användarens inmatningsvärden
         const purchasePrice = parseFloat(document.getElementById('purchasePrice').value.replace(/\s+/g, ''));
@@ -172,6 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("Månatlig portföljavkastning:", monthlyStockReturnRate);
     
         let totalMonthlyInvestment = 0;  // Total monthly investment tracker
+        let totalFutureValueRent = initialInvestment; // För att spåra det totala framtida värdet av renten
     
         for (let i = 0; i < years * 12; i++) {
             const monthlyInterestPayment = loanAmount * monthlyInterestRate;
@@ -192,22 +192,17 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("  Månatlig bostadskostnad:", monthlyHousingCost);
             console.log("  Månatlig investering:", monthlyInvestment);
     
+            // Uppdatera totalFutureValueRent med den månatliga investeringen och avkastningen
             if (monthlyInvestment > 0) {
-                futureValueRent = futureValueRent * (1 + monthlyStockReturnRate) + monthlyInvestment;
+                totalFutureValueRent = totalFutureValueRent * (1 + monthlyStockReturnRate) + monthlyInvestment;
             } else {
-                futureValueRent *= (1 + monthlyStockReturnRate);
+                totalFutureValueRent *= (1 + monthlyStockReturnRate);
             }
-            console.log("  Uppdaterad futureValueRent:", futureValueRent);
+            console.log("  Uppdaterad futureValueRent:", totalFutureValueRent);
         }
     
         // Korrekt formel för att ta hänsyn till löpande investeringar och initial investering
-        const months = years * 12;
-        const futureValueInitialInvestment = initialInvestment * (1 + monthlyStockReturnRate) ** months;
-        const futureValueMonthlyInvestments = totalMonthlyInvestment * ((1 + monthlyStockReturnRate) ** months - 1) / monthlyStockReturnRate;
-        const futureValue = futureValueInitialInvestment + futureValueMonthlyInvestments;
-    
-        console.log("Initial investment future value contribution:", futureValueInitialInvestment);
-        console.log("Monthly investment future value contribution:", futureValueMonthlyInvestments);
+        const futureValue = totalFutureValueRent; // Eftersom totalFutureValueRent redan inkluderar den initiala investeringen och månatliga investeringar med avkastning
     
         // Framtida värde för bostadsrätten
         futureValueBuy = purchasePrice * (1 + overallReturnRate) ** years;
@@ -224,6 +219,8 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
     }
+    
+    
     
     
 });
