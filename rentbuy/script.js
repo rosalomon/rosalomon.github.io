@@ -145,6 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
         let futureValueBuy = purchasePrice;
         let futureValueRent = initialInvestment;
+        console.log("Initial futureValueRent:", futureValueRent);
     
         let loanAmount = purchasePrice * loanToValue;
         let totalInterestPaid = 0;
@@ -196,12 +197,15 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 futureValueRent *= (1 + monthlyStockReturnRate);
             }
+            console.log("  Uppdaterad futureValueRent:", futureValueRent);
         }
     
         // Korrekt formel för att ta hänsyn till löpande investeringar och initial investering
         const months = years * 12;
-        const futureValue = futureValueRent * ((1 + monthlyStockReturnRate) ** months) +
-            (totalMonthlyInvestment * ((1 + monthlyStockReturnRate) ** months - 1) / monthlyStockReturnRate) * (1 + monthlyStockReturnRate);
+        const futureValue = futureValueRent + (totalMonthlyInvestment * ((1 + monthlyStockReturnRate) ** months - 1) / monthlyStockReturnRate);
+        
+        console.log("Initial investment future value contribution:", futureValueRent * ((1 + monthlyStockReturnRate) ** months));
+        console.log("Monthly investment future value contribution:", (totalMonthlyInvestment * ((1 + monthlyStockReturnRate) ** months - 1) / monthlyStockReturnRate));
     
         // Framtida värde för bostadsrätten
         futureValueBuy = purchasePrice * (1 + overallReturnRate) ** years;
@@ -218,7 +222,5 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
     }
-    
-    
     
 });
