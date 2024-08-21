@@ -1,204 +1,170 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Hantera knapptryckningar för att välja antal år
     document.querySelectorAll('.year-btn').forEach(button => {
         button.addEventListener('click', function() {
             toggleActiveYearButton(this);
         });
     });
 
-    document.getElementById('interestRate').addEventListener('input', function() {
-        document.getElementById('interestRateValue').textContent = this.value;
+    // Synka input-värden med sliders för ränta och belåningsgrad
+    ['interestRate', 'loanToValue', 'overallReturnRate', 'stockReturnRate'].forEach(id => {
+        document.getElementById(id).addEventListener('input', function() {
+            document.getElementById(`${id}Value`).textContent = this.value;
+        });
     });
 
-    document.getElementById('loanToValue').addEventListener('input', function() {
-        document.getElementById('loanToValueValue').textContent = this.value;
-    });
+    document.getElementById('calculateBtn').addEventListener('click', calculateValues);
 
-    document.getElementById('overallReturnRate').addEventListener('input', function() {
-        document.getElementById('overallReturnRateValue').textContent = this.value;
-    });
-
-    document.getElementById('stockReturnRate').addEventListener('input', function() {
-        document.getElementById('stockReturnRateValue').textContent = this.value;
-    });
-
-    document.getElementById('calculateBtn').addEventListener('click', function() {
-        calculateValues();
-    });
-
-    document.getElementById('overallReturnRateArrow').addEventListener('click', function() {
-        toggleIndividualSliders('overall');
-    });
-
-    document.getElementById('stockReturnRateArrow').addEventListener('click', function() {
-        toggleIndividualSliders('stock');
+    // Hantera klick på pilarna för att visa eller dölja individuella sliders
+    ['overallReturnRateArrow', 'stockReturnRateArrow'].forEach(id => {
+        document.getElementById(id).addEventListener('click', function() {
+            toggleIndividualSliders(id === 'overallReturnRateArrow' ? 'overall' : 'stock');
+        });
     });
 
     function toggleActiveYearButton(activeButton) {
-        const buttons = document.querySelectorAll('.year-btn');
-        buttons.forEach(button => {
-            if (button === activeButton) {
-                button.classList.add('active');
-            } else {
-                button.classList.remove('active');
-            }
+        document.querySelectorAll('.year-btn').forEach(button => {
+            button.classList.toggle('active', button === activeButton);
         });
     }
 
     function toggleIndividualSliders(type) {
-        const yearsButton = document.querySelector('.year-btn.active');
-        const years = yearsButton ? parseInt(yearsButton.getAttribute('data-years')) : 0;
-        const container = type === 'overall' ? document.getElementById('individualOverallReturnRates') : document.getElementById('individualStockReturnRates');
-        const arrowButton = type === 'overall' ? document.getElementById('overallReturnRateArrow') : document.getElementById('stockReturnRateArrow');
-        const mainSlider = type === 'overall' ? document.getElementById('overallReturnRate') : document.getElementById('stockReturnRate');
-        const mainSliderValue = type === 'overall' ? parseFloat(document.getElementById('overallReturnRate').value) : parseFloat(document.getElementById('stockReturnRate').value);
-
-        if (years === 0) {
+        const years = getSelectedYears();
+        if (!years) {
             alert('Välj antal år först.');
             return;
         }
 
-        if (container.classList.contains('hidden')) {
-            container.classList.remove('hidden');
-            container.innerHTML = '';
+        const container = document.getElementById(type === 'overall' ? 'individualOverallReturnRates' : 'individualStockReturnRates');
+        const arrowButton = document.getElementById(type === 'overall' ? 'overallReturnRateArrow' : 'stockReturnRateArrow');
+        const mainSlider = document.getElementById(type === 'overall' ? 'overallReturnRate' : 'stockReturnRate');
 
-            for (let i = 1; i <= years; i++) {
-                const label = document.createElement('label');
-                label.textContent = `${type === 'overall' ? 'Värdeökningen' : 'Avkastningen'} år ${i}:`;
-
-                const slider = document.createElement('input');
-                slider.type = 'range';
-                slider.min = '-100';
-                slider.max = '100';
-                slider.step = '0.1';
-                slider.value = mainSliderValue;
-                slider.classList.add(`${type}-individual-return-rate`);
-
-                const span = document.createElement('span');
-                span.textContent = mainSliderValue;
-
-                slider.addEventListener('input', function() {
-                    span.textContent = this.value;
-                });
-
-                container.appendChild(label);
-                container.appendChild(slider);
-                container.appendChild(span);
-                container.appendChild(document.createElement('br'));
-            }
-
-            arrowButton.textContent = '▲';
-            mainSlider.disabled = true;
-        } else {
-            container.classList.add('hidden');
+        if (container.classList.toggle('hidden')) {
             container.innerHTML = '';
             arrowButton.textContent = '▼';
             mainSlider.disabled = false;
+        } else {
+            container.innerHTML = '';
+            for (let i = 1; i <= years; i++) {
+                container.appendChild(createSliderElement(type, mainSlider.value, i));
+            }
+            arrowButton.textContent = '▲';
+            mainSlider.disabled = true;
         }
+    }
+
+    function createSliderElement(type, value, year) {
+        const label = document.createElement('label');
+        label.textContent = `${type === 'overall' ? 'Värdeökningen' : 'Avkastningen'} år ${year}:`;
+
+        const slider = document.createElement('input');
+        slider.type = 'range';
+        slider.min = '-100';
+        slider.max = '100';
+        slider.step = '0.1';
+        slider.value = value;
+        slider.classList.add(`${type}-individual-return-rate`);
+
+        const span = document.createElement('span');
+        span.textContent = value;
+
+        slider.addEventListener('input', function() {
+            span.textContent = this.value;
+        });
+
+        const wrapper = document.createElement('div');
+        wrapper.appendChild(label);
+        wrapper.appendChild(slider);
+        wrapper.appendChild(span);
+        return wrapper;
+    }
+
+    function getSelectedYears() {
+        const yearsButton = document.querySelector('.year-btn.active');
+        return yearsButton ? parseInt(yearsButton.getAttribute('data-years')) : 0;
     }
 
     function calculateValues() {
         const purchasePrice = parseFloat(document.getElementById('purchasePrice').value.replace(/\s+/g, ''));
         const monthlyFee = parseFloat(document.getElementById('monthlyFee').value.replace(/\s+/g, ''));
-        let monthlyRent = parseFloat(document.getElementById('monthlyRent').value.replace(/\s+/g, ''));
+        const monthlyRent = parseFloat(document.getElementById('monthlyRent').value.replace(/\s+/g, ''));
         const interestRate = parseFloat(document.getElementById('interestRate').value) / 100;
         const loanToValue = parseFloat(document.getElementById('loanToValue').value) / 100;
-        const size = parseFloat(document.getElementById('size').value);
         const overallReturnRate = parseFloat(document.getElementById('overallReturnRate').value) / 100;
         const stockReturnRate = parseFloat(document.getElementById('stockReturnRate').value) / 100;
         const strictAmortization = document.getElementById('strictAmortization').checked;
         const initialInvestment = parseFloat(document.getElementById('initialInvestment').value.replace(/\s+/g, ''));
-        const yearsButton = document.querySelector('.year-btn.active');
-        const years = yearsButton ? parseInt(yearsButton.getAttribute('data-years')) : 0;
-    
-        if (isNaN(monthlyRent) || isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(size) || isNaN(overallReturnRate) || isNaN(stockReturnRate) || years === 0) {
+        const years = getSelectedYears();
+
+        if (isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(monthlyRent) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(overallReturnRate) || isNaN(stockReturnRate) || isNaN(initialInvestment) || years === 0) {
             alert('Var god fyll i alla fält korrekt.');
             return;
         }
-    
-        if (isNaN(initialInvestment)) {
-            alert('Var god fyll i en korrekt initial investering.');
-            return;
-        }
-    
-        // Hantera individuella avkastningar för börsen om de är aktiverade
-        let stockReturnRates = [];
-        if (!document.getElementById('individualStockReturnRates').classList.contains('hidden')) {
-            document.querySelectorAll('.stock-individual-return-rate').forEach((slider, index) => {
-                stockReturnRates.push(parseFloat(slider.value) / 100);
+
+        // Beräkna avkastningar och värdeökningar
+        const stockReturnRates = getReturnRates('stock', stockReturnRate, years);
+        const overallReturnRates = getReturnRates('overall', overallReturnRate, years);
+
+        let futureValueBuy = calculateFutureValue(purchasePrice, overallReturnRates);
+        let futureValueRent = calculatePortfolioValue(initialInvestment, monthlyRent, monthlyFee, loanToValue, interestRate, strictAmortization, stockReturnRates, years);
+
+        // Visa resultat
+        document.getElementById('buyResult').innerHTML = `<p>Framtida värdet ${years} år: ${futureValueBuy.toFixed(2).toLocaleString()} kr</p>`;
+        document.getElementById('rentResult').innerHTML = `<p>Framtida värdet ${years} år: ${futureValueRent.toFixed(2).toLocaleString()} kr</p>`;
+        document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function getReturnRates(type, defaultRate, years) {
+        const rates = [];
+        const container = document.getElementById(type === 'overall' ? 'individualOverallReturnRates' : 'individualStockReturnRates');
+        if (!container.classList.contains('hidden')) {
+            document.querySelectorAll(`.${type}-individual-return-rate`).forEach(slider => {
+                rates.push(parseFloat(slider.value) / 100);
             });
         } else {
             for (let i = 0; i < years; i++) {
-                stockReturnRates.push(stockReturnRate);
+                rates.push(defaultRate);
             }
         }
-    
-        // Hantera individuella värdeökningar för bostaden om de är aktiverade
-        let overallReturnRates = [];
-        if (!document.getElementById('individualOverallReturnRates').classList.contains('hidden')) {
-            document.querySelectorAll('.overall-individual-return-rate').forEach((slider, index) => {
-                overallReturnRates.push(parseFloat(slider.value) / 100);
-            });
-        } else {
-            for (let i = 0; i < years; i++) {
-                overallReturnRates.push(overallReturnRate);
-            }
-        }
-    
-        let futureValueBuy = purchasePrice;
+        return rates;
+    }
+
+    function calculateFutureValue(initialValue, rates) {
+        return rates.reduce((value, rate) => value * (1 + rate), initialValue);
+    }
+
+    function calculatePortfolioValue(initialInvestment, monthlyRent, monthlyFee, loanToValue, interestRate, strictAmortization, stockReturnRates, years) {
+        let loanAmount = initialInvestment * loanToValue;
         let futureValueRent = initialInvestment;
-        let loanAmount = purchasePrice * loanToValue;
-        let totalInterestPaid = 0;
-        let totalAmortizationPaid = 0;
-        let monthlyAmortization = 0;
-    
-        if (loanToValue > 0.5) {
-            monthlyAmortization = (loanAmount * 0.01) / 12;
-        }
-    
-        if (loanToValue > 0.7) {
-            monthlyAmortization = (loanAmount * 0.02) / 12;
-        }
-    
-        if (strictAmortization) {
-            monthlyAmortization += (loanAmount * 0.01) / 12;
-        }
-    
-        const monthlyInterestRate = interestRate / 12;
-    
+        let monthlyAmortization = getMonthlyAmortization(loanAmount, loanToValue, strictAmortization);
+
         for (let i = 0; i < years * 12; i++) {
-            const monthlyInterestPayment = loanAmount * monthlyInterestRate;
+            const monthlyInterestPayment = loanAmount * (interestRate / 12);
             const monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
             const monthlyInvestment = monthlyHousingCost - monthlyRent;
-    
+
             if (loanToValue > 0.5) {
                 loanAmount -= monthlyAmortization;
             }
-    
-            totalInterestPaid += monthlyInterestPayment;
-            totalAmortizationPaid += monthlyAmortization;
-    
+
             const currentYear = Math.floor(i / 12);
             const monthlyStockReturnRate = (1 + stockReturnRates[currentYear]) ** (1 / 12) - 1;
-            
+
             if (monthlyInvestment > 0) {
                 futureValueRent = futureValueRent * (1 + monthlyStockReturnRate) + monthlyInvestment;
             } else {
                 futureValueRent *= (1 + monthlyStockReturnRate);
             }
         }
-    
-        // Uppdatera beräkningen av bostadens framtida värde med individuella årliga tillväxter
-        for (let i = 0; i < years; i++) {
-            futureValueBuy *= (1 + overallReturnRates[i]);
-        }
-    
-        document.getElementById('buyResult').innerHTML = `
-            <p>Framtida värdet ${years} år: ${futureValueBuy.toFixed(2).toLocaleString()} kr</p>
-        `;
-        document.getElementById('rentResult').innerHTML = `
-            <p>Framtida värdet ${years} år: ${futureValueRent.toFixed(2).toLocaleString()} kr</p>
-        `;
-        document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+
+        return futureValueRent;
     }
-    
+
+    function getMonthlyAmortization(loanAmount, loanToValue, strictAmortization) {
+        let monthlyAmortization = 0;
+        if (loanToValue > 0.5) monthlyAmortization = (loanAmount * 0.01) / 12;
+        if (loanToValue > 0.7) monthlyAmortization = (loanAmount * 0.02) / 12;
+        if (strictAmortization) monthlyAmortization += (loanAmount * 0.01) / 12;
+        return monthlyAmortization;
+    }
 });

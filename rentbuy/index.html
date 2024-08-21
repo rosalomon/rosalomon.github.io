@@ -10,74 +10,70 @@
     <div class="container">
         <h1>Hyra eller köpa?</h1>
         <h2>Investera i en bostad eller hyra och placera skillnaden på börsen</h2>
-        <div class="years-section" id="yearsSection">
+        <div class="years-section">
             <button class="year-btn" data-years="1">1 år</button>
             <button class="year-btn" data-years="2">2 år</button>
             <button class="year-btn" data-years="3">3 år</button>
             <button class="year-btn" data-years="5">5 år</button>
             <button class="year-btn" data-years="10">10 år</button>
         </div>
-        <div class="input-section" id="inputSection">
+        <div class="input-section">
             <h2>Fyll i dina uppgifter</h2>
             <div>
                 <label for="purchasePrice">Köpeskilling:</label>
-                <input type="number" id="purchasePrice" name="purchasePrice" inputmode ="numeric">
+                <input type="number" id="purchasePrice">
             </div>
             <div class="inline-inputs">
                 <div>
                     <label for="monthlyFee">Avgift:</label>
-                    <input type="number" id="monthlyFee" name="monthlyFee" inputmode ="numeric">
+                    <input type="number" id="monthlyFee">
                 </div>
                 <div>
                     <label for="monthlyRent">Månadshyra:</label>
-                    <input type="number" id="monthlyRent" name="monthlyRent" inputmode ="numeric">
+                    <input type="number" id="monthlyRent">
                 </div>
             </div>
             <div>
                 <label for="size">Bostadens storlek (kvm):</label>
-                <input type="number" id="size" name="size" inputmode ="numeric">
+                <input type="number" id="size">
             </div>
             <div>
                 <label for="interestRate">Ränta bolån (%):</label>
-                <input type="range" id="interestRate" name="interestRate" min="0" max="25" step="0.1">
+                <input type="range" id="interestRate" min="0" max="25" step="0.1">
                 <span id="interestRateValue">0</span>%
             </div>
-            
             <div class="inline-inputs-separate">
-                <div class="slider-container">
+                <div>
                     <label for="loanToValue">Belåningsgrad (%):</label>
-                    <input type="range" id="loanToValue" name="loanToValue" min="0" max="100" step="1">
+                    <input type="range" id="loanToValue" min="0" max="100" step="1">
                     <span id="loanToValueValue">0</span>%
                 </div>
-                <div class="checkbox-container">
-                    <input type="checkbox" id="strictAmortization" name="strictAmortization">
+                <div>
+                    <input type="checkbox" id="strictAmortization">
                     <label for="strictAmortization">Skärpt amorteringskrav</label>
                 </div>
             </div>
-           
             <div>
                 <label for="overallReturnRate">Bostadens värdeökning per år (%):</label>
-                <input type="range" id="overallReturnRate" name="overallReturnRate" min="-100" max="100" step="0.5">
+                <input type="range" id="overallReturnRate" min="-100" max="100" step="0.5">
                 <span id="overallReturnRateValue">0</span>%
-                <br>
                 <button id="overallReturnRateArrow" class="arrow-btn">▼</button>
             </div>
             <div id="individualOverallReturnRates" class="hidden"></div>
             <div>
                 <label for="stockReturnRate">Börsplaceringens avkastning per år (%):</label>
-                <input type="range" id="stockReturnRate" name="stockReturnRate" min="-100" max="100" step="0.5">
+                <input type="range" id="stockReturnRate" min="-100" max="100" step="0.5">
                 <span id="stockReturnRateValue">0</span>%
-                <br>
                 <button id="stockReturnRateArrow" class="arrow-btn">▼</button>
             </div>
             <div id="individualStockReturnRates" class="hidden"></div>
             <div>
                 <label for="initialInvestment">Initial börsinvestering:</label>
-                <input type="number" id="initialInvestment" name="initialInvestment" inputmode ="numeric">
+                <input type="number" id="initialInvestment">
             </div>
             <button id="calculateBtn">Beräkna</button>
         </div>
-        <div class="result-section" id="resultSection">
+        <div class="result-section">
             <div class="result-box">
                 <h3>Framtida värdet på bostadsrätten</h3>
                 <div id="buyResult">Väntar på beräkning...</div>
@@ -89,7 +85,5 @@
         </div>
     </div>
     <script src="script.js"></script>
-
-    
 </body>
 </html>
