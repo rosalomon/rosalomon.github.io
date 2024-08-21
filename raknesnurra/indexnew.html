@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Räntekollen</title>
+    <style>
+        .form-container {
+            background-color: #fff;
+            padding: 32px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-family: var(--font-family-sans-serif);
+        }
+        .slider {
+            width: 100%;
+            accent-color: var(--corp-color-primary);
+        }
+        .result {
+            margin: 16px 0;
+            font-size: 18px;
+            font-family: var(--font-family-sans-serif);
+        }
+        .form-container button {
+            width: 100px;
+        }
+        .checkbox-container > label {
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-container p {
+            margin: 0;
+            margin-left: 8px;
+            font-family: var(--font-family-sans-serif);
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Räntekollen: Så blir din månadskostnad när du byter boränta</h2>
+    <br>
+    <div class="slider-container">
+        Ditt lån
+        <input type="range" id="mortage_slider" class="slider" min="100000" max="15000000" step="100000" value="100000">
+        <input type="text" id="mortage_value" min="100000" max="15000000" step="100000" value="100000">
+    </div>
+    <br />
+    <div class="slider-container">
+        Nuvarande ränta
+        <input type="range" id="current_interest_rate_slider" class="slider" min="0" max="10" step="0.01" value="0">
+        <input type="text" id="current_interest_rate_value" min="0" max="10" step="0.01" value="0">
+    </div>
+    <br />
+    <div class="slider-container">
+        Ny ränta
+        <input type="range" id="new_interest_rate_slider" class="slider" min="0" max="10" step="0.01" value="0">
+        <input type="text" id="new_interest_rate_value" min="0" max="10" step="0.01" value="0">
+    </div>
+    <br />
+    <div class="checkbox-container">
+        <label>
+            <input type="checkbox" id="interest_deduction" class="interest-deduction">
+            <p>Beräkna med ränteavdrag på 30%</p>
+        </label>
+    </div>
+
+    <div class="result" id="result"></div>
+    <button class="btn btn--small btn--primary btn--round" onclick="calculateSum()">Beräkna</button>
+</div>
+
+<script>
+    function formatNumberWithSpaces(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+    function removeSpaces(number) {
+        return number.toString().replace(/\s+/g, '');
+    }
+
+    function replaceCommaWithDot(value) {
+        return value.replace(',', '.');
+    }
+
+    document.getElementById('mortage_slider').addEventListener('input', function() {
+        var formattedValue = formatNumberWithSpaces(this.value);
+        document.getElementById('mortage_value').value = formattedValue;
+    });
+
+    document.getElementById('mortage_value').addEventListener('input', function() {
+        var unformattedValue = removeSpaces(this.value);
+        document.getElementById('mortage_slider').value = unformattedValue;
+        this.value = formatNumberWithSpaces(unformattedValue);
+    });
+
+    document.getElementById('current_interest_rate_value').addEventListener('input', function() {
+        var correctedValue = replaceCommaWithDot(this.value);
+        document.getElementById('current_interest_rate_slider').value = correctedValue;
+        this.value = correctedValue;
+    });
+
+    document.getElementById('new_interest_rate_value').addEventListener('input', function() {
+        var correctedValue = replaceCommaWithDot(this.value);
+        document.getElementById('new_interest_rate_slider').value = correctedValue;
+        this.value = correctedValue;
+    });
+
+    document.getElementById('current_interest_rate_slider').addEventListener('input', function() {
+        document.getElementById('current_interest_rate_value').value = this.value;
+    });
+
+    document.getElementById('new_interest_rate_slider').addEventListener('input', function() {
+        document.getElementById('new_interest_rate_value').value = this.value;
+    });
+
+    function calculateSum() {
+        var mortage = parseFloat(removeSpaces(document.getElementById('mortage_slider').value));
+        var old_interest = parseFloat(document.getElementById('current_interest_rate_slider').value);
+        var new_interest = parseFloat(document.getElementById('new_interest_rate_slider').value);
+
+        var interestDeductionFactor = document.getElementById('interest_deduction').checked ? 0.7 : 1;
+
+        var old_cost = mortage * (old_interest / 100) / 12 * interestDeductionFactor;
+        var new_cost = mortage * (new_interest / 100) / 12 * interestDeductionFactor;
+
+        document.getElementById('result').innerHTML = 
+            '<span>Gammal månadskostnad: </span><strong>' + old_cost.toFixed(2) + '</strong><br>' + 
+            '<span>Ny månadskostnad: </span><strong>' + new_cost.toFixed(2) + '</strong>';
+    }
+</script>
+
+</body>
+</html>
