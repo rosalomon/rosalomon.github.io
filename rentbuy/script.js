@@ -109,18 +109,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const initialInvestment = parseFloat(document.getElementById('initialInvestment').value.replace(/\s+/g, ''));
         const yearsButton = document.querySelector('.year-btn.active');
         const years = yearsButton ? parseInt(yearsButton.getAttribute('data-years')) : 0;
-
+    
         if (isNaN(monthlyRent) || isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(size) || isNaN(overallReturnRate) || isNaN(stockReturnRate) || years === 0) {
             alert('Var god fyll i alla fält korrekt.');
             return;
         }
-
+    
         if (isNaN(initialInvestment)) {
             alert('Var god fyll i en korrekt initial investering.');
             return;
         }
-
-        // Hantera individuella avkastningar om de är aktiverade
+    
+        // Hantera individuella avkastningar för börsen om de är aktiverade
         let stockReturnRates = [];
         if (!document.getElementById('individualStockReturnRates').classList.contains('hidden')) {
             document.querySelectorAll('.stock-individual-return-rate').forEach((slider, index) => {
@@ -131,52 +131,67 @@ document.addEventListener('DOMContentLoaded', function() {
                 stockReturnRates.push(stockReturnRate);
             }
         }
-
+    
+        // Hantera individuella värdeökningar för bostaden om de är aktiverade
+        let overallReturnRates = [];
+        if (!document.getElementById('individualOverallReturnRates').classList.contains('hidden')) {
+            document.querySelectorAll('.overall-individual-return-rate').forEach((slider, index) => {
+                overallReturnRates.push(parseFloat(slider.value) / 100);
+            });
+        } else {
+            for (let i = 0; i < years; i++) {
+                overallReturnRates.push(overallReturnRate);
+            }
+        }
+    
         let futureValueBuy = purchasePrice;
         let futureValueRent = initialInvestment;
         let loanAmount = purchasePrice * loanToValue;
         let totalInterestPaid = 0;
         let totalAmortizationPaid = 0;
         let monthlyAmortization = 0;
-
+    
         if (loanToValue > 0.5) {
             monthlyAmortization = (loanAmount * 0.01) / 12;
         }
-
+    
         if (loanToValue > 0.7) {
             monthlyAmortization = (loanAmount * 0.02) / 12;
         }
-
+    
         if (strictAmortization) {
             monthlyAmortization += (loanAmount * 0.01) / 12;
         }
-
+    
         const monthlyInterestRate = interestRate / 12;
-
+    
         for (let i = 0; i < years * 12; i++) {
             const monthlyInterestPayment = loanAmount * monthlyInterestRate;
             const monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
             const monthlyInvestment = monthlyHousingCost - monthlyRent;
-
+    
             if (loanToValue > 0.5) {
                 loanAmount -= monthlyAmortization;
             }
-
+    
             totalInterestPaid += monthlyInterestPayment;
             totalAmortizationPaid += monthlyAmortization;
-
+    
             const currentYear = Math.floor(i / 12);
             const monthlyStockReturnRate = (1 + stockReturnRates[currentYear]) ** (1 / 12) - 1;
-
+            
             if (monthlyInvestment > 0) {
                 futureValueRent = futureValueRent * (1 + monthlyStockReturnRate) + monthlyInvestment;
             } else {
                 futureValueRent *= (1 + monthlyStockReturnRate);
             }
         }
-
-        futureValueBuy = purchasePrice * (1 + overallReturnRate) ** years;
-
+    
+        // Uppdatera beräkningen av bostadens framtida värde med individuella årliga tillväxter
+        for (let i = 0; i < years; i++) {
+            futureValueBuy *= (1 + overallReturnRates[i]);
+        }
+    
         document.getElementById('buyResult').innerHTML = `
             <p>Framtida värdet ${years} år: ${futureValueBuy.toFixed(2).toLocaleString()} kr</p>
         `;
@@ -185,4 +200,5 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
     }
+    
 });
