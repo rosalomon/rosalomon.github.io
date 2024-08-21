@@ -54,7 +54,6 @@ h2 {
     background-color: #e0e0e0; /* Light grey background */
     color: #555; /* Darker grey text */
     transition: background-color 0.3s, color 0.3s;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Lägg till box-shadow för knappar */
 }
 
 .choice-btn.active, .year-btn.active, .location-btn.active {
@@ -83,7 +82,6 @@ input[type="number"] {
     border: 1px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Lägg till box-shadow för input-fält */
 }
 
 .inline-inputs, .inline-inputs-separate {
@@ -104,7 +102,6 @@ input[type="range"] {
     margin-bottom: 10px;
     cursor: pointer;
     background-color: transparent; /* Make the background transparent */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Lägg till box-shadow för sliders */
 }
 
 input[type="range"]:disabled {
@@ -152,8 +149,6 @@ button {
     background-color: #007bff;
     color: #fff;
     cursor: pointer;
-    transition: background-color 0.3s;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Lägg till box-shadow för knappar */
 }
 
 button:hover {
@@ -194,8 +189,6 @@ button:hover {
     border: none;
     border-radius: 3px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Lägg till box-shadow för arrow-knappar */
 }
 
 .arrow-btn:hover {
@@ -208,7 +201,7 @@ button:hover {
     }
 
     .inline-inputs, .inline-inputs-separate {
-        flex-direction: row;
+        flex-direction: row
     }
 
     .result-section {
@@ -220,3 +213,7 @@ button:hover {
         width: calc(50% - 10px);
     }
 }
+
+
+
+
