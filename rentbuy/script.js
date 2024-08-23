@@ -138,25 +138,25 @@ document.addEventListener('DOMContentLoaded', function() {
     function calculatePortfolioValue(initialInvestment, monthlyRent, monthlyFee, loanToValue, interestRate, strictAmortization, stockReturnRates, years) {
         let loanAmount = 2_000_000 * loanToValue;  // Lånebeloppet baserat på köpeskillingen
         let monthlyAmortization = getMonthlyAmortization(loanAmount, loanToValue, strictAmortization);
-    
+
         // Beräkna månadskostnaden för bostadsägaren
         let monthlyInterestPayment = loanAmount * (interestRate / 12);
         let monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
-    
+
         // Beräkna skillnaden i boendekostnader
-        let monthlyInvestment = monthlyHousingCost - monthlyRent; // Skillnaden investeras på börsen
-    
+        let monthlyInvestment = Math.max(0, monthlyHousingCost - monthlyRent); // Skillnaden investeras på börsen om den är positiv
+
         let futureValueRent = initialInvestment;
-    
+
         // Månatlig avkastning
         for (let i = 0; i < years * 12; i++) {
             const currentYear = Math.floor(i / 12);
             const monthlyStockReturnRate = (1 + stockReturnRates[currentYear]) ** (1 / 12) - 1;
-    
+
             // Lägg till den månatliga investeringen och beräkna framtida värde
             futureValueRent = futureValueRent * (1 + monthlyStockReturnRate) + monthlyInvestment;
         }
-    
+
         return futureValueRent;
     }
 
