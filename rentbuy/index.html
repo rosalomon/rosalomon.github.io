@@ -55,16 +55,20 @@
             </div>
             <div>
                 <label for="overallReturnRate">Bostadens värdeökning per år (%):</label>
-                <input type="range" id="overallReturnRate" min="-100" max="100" step="0.5">
-                <span id="overallReturnRateValue">0</span>%
-                <button id="overallReturnRateArrow" class="arrow-btn">▼</button>
+                <div class="slider-container">
+                    <input type="range" id="overallReturnRate" min="-100" max="100" step="0.5">
+                    <span id="overallReturnRateValue">0</span>% 
+                    <button id="overallReturnRateArrow" class="arrow-btn">▼</button>
+                </div>
             </div>
             <div id="individualOverallReturnRates" class="hidden"></div>
             <div>
                 <label for="stockReturnRate">Börsplaceringens avkastning per år (%):</label>
-                <input type="range" id="stockReturnRate" min="-100" max="100" step="0.5">
-                <span id="stockReturnRateValue">0</span>%
-                <button id="stockReturnRateArrow" class="arrow-btn">▼</button>
+                <div class="slider-container">
+                    <input type="range" id="stockReturnRate" min="-100" max="100" step="0.5">
+                    <span id="stockReturnRateValue">0</span>% 
+                    <button id="stockReturnRateArrow" class="arrow-btn">▼</button>
+                </div>
             </div>
             <div id="individualStockReturnRates" class="hidden"></div>
             <div>
@@ -73,18 +77,14 @@
             </div>
             <button id="calculateBtn">Beräkna</button>
         </div>
-        <div class="result-section" id="resultSection">
+        <div class="result-section">
             <div class="result-box">
-                <h3>Resultat för bostadsköp</h3>
+                <h3>Framtida värdet på bostadsrätten</h3>
                 <div id="buyResult">Väntar på beräkning...</div>
             </div>
             <div class="result-box">
-                <h3>Resultat för hyra och investering</h3>
+                <h3>Framtida värdet hos hyresgästens portfölj</h3>
                 <div id="rentResult">Väntar på beräkning...</div>
-            </div>
-            <div class="result-box">
-                <h3>Kostnadsjämförelse</h3>
-                <div id="comparisonResult">Väntar på beräkning...</div>
             </div>
         </div>
     </div>
