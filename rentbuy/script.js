@@ -156,16 +156,21 @@ document.addEventListener('DOMContentLoaded', function() {
     function calculatePortfolioValue(purchasePrice, initialInvestment, monthlyRent, monthlyFee, loanToValue, interestRate, strictAmortization, stockReturnRates, years) {
         // Dynamiskt lånebelopp baserat på användarens inmatade köpeskilling
         let loanAmount = purchasePrice * loanToValue;  
+        console.log("Lånebelopp:", loanAmount);  // Debug-logg
+    
         let monthlyAmortization = getMonthlyAmortization(loanAmount, loanToValue, strictAmortization);
+        console.log("Månatlig amortering:", monthlyAmortization);  // Debug-logg
     
         // Beräkna månadskostnaden för bostadsägaren
         let monthlyInterestPayment = loanAmount * (interestRate / 12);
+        console.log("Månatlig räntebetalning:", monthlyInterestPayment);  // Debug-logg
+    
         let monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
+        console.log("Månadskostnad för bostadsägare:", monthlyHousingCost);  // Debug-logg
     
         // Beräkna skillnaden i boendekostnader
         let monthlyInvestment = Math.max(0, monthlyHousingCost - monthlyRent);  // Skillnaden investeras på börsen om den är positiv
-        console.log("Månadskostnad för bostadsägare:", monthlyHousingCost);
-        console.log("Månatlig investering från skillnad i boendekostnader:", monthlyInvestment);
+        console.log("Månatlig investering från skillnad i boendekostnader:", monthlyInvestment);  // Debug-logg
     
         let futureValueRent = initialInvestment;
     
@@ -181,19 +186,46 @@ document.addEventListener('DOMContentLoaded', function() {
     
         return futureValueRent;
     }
-
+    
     function getMonthlyAmortization(loanAmount, loanToValue, strictAmortization) {
         let monthlyAmortization = 0;
-        if (loanToValue > 0.5) monthlyAmortization = (loanAmount * 0.01) / 12;
-        if (loanToValue > 0.7) monthlyAmortization = (loanAmount * 0.02) / 12;
-        if (strictAmortization) monthlyAmortization += (loanAmount * 0.01) / 12;
-        console.log("Månatlig amortering:", monthlyAmortization);
+        
+        // Kontrollera att lånebeloppet är korrekt
+        console.log("Lånebelopp för amortering:", loanAmount);
+    
+        // Amortering baserat på belåningsgrad
+        if (loanToValue > 0.5 && loanToValue <= 0.7) {
+            monthlyAmortization = (loanAmount * 0.01) / 12;
+        } else if (loanToValue > 0.7) {
+            monthlyAmortization = (loanAmount * 0.02) / 12;
+        }
+    
+        // Skärpt amorteringskrav
+        if (strictAmortization) {
+            monthlyAmortization += (loanAmount * 0.01) / 12;
+        }
+    
+        console.log("Månatlig amortering efter kontroll:", monthlyAmortization);  // Debug-logg
         return monthlyAmortization;
     }
-
+    
     function displayResults(futureValueBuy, futureValueRent, years) {
-        document.getElementById('buyResult').innerHTML = `<p>Framtida värdet ${years} år: ${futureValueBuy.toFixed(2).toLocaleString()} kr</p>`;
-        document.getElementById('rentResult').innerHTML = `<p>Framtida värdet ${years} år: ${futureValueRent.toFixed(2).toLocaleString()} kr</p>`;
-        document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+        const buyResultElement = document.getElementById('buyResult');
+        const rentResultElement = document.getElementById('rentResult');
+    
+        // Kontrollera om elementen finns innan vi försöker uppdatera dem
+        if (buyResultElement && rentResultElement) {
+            buyResultElement.innerHTML = `<p>Framtida värdet ${years} år: ${futureValueBuy.toFixed(2).toLocaleString()} kr</p>`;
+            rentResultElement.innerHTML = `<p>Framtida värdet ${years} år: ${futureValueRent.toFixed(2).toLocaleString()} kr</p>`;
+            
+            // Kontrollera om resultSection finns innan vi rullar dit
+            const resultSection = document.getElementById('resultSection');
+            if (resultSection) {
+                resultSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        } else {
+            console.error("Resultatsektionerna hittades inte i DOM.");
+        }
     }
+    
 });
