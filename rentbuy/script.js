@@ -97,6 +97,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const initialInvestment = parseFloat(document.getElementById('initialInvestment').value.replace(/\s+/g, ''));
         const years = getSelectedYears();
 
+        // Debug: Logga alla inmatade värden
+        console.log("Inmatade värden:");
+        console.log("Köpeskilling:", purchasePrice);
+        console.log("Månadsavgift:", monthlyFee);
+        console.log("Månadshyra:", monthlyRent);
+        console.log("Ränta bolån (%):", interestRate);
+        console.log("Belåningsgrad (%):", loanToValue);
+        console.log("Bostadens värdeökning per år (%):", overallReturnRate);
+        console.log("Börsplaceringens avkastning per år (%):", stockReturnRate);
+        console.log("Initial börsinvestering:", initialInvestment);
+        console.log("Antal år:", years);
+
         if (isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(monthlyRent) || isNaN(interestRate) || isNaN(loanToValue) || isNaN(overallReturnRate) || isNaN(stockReturnRate) || isNaN(initialInvestment) || years === 0) {
             alert('Var god fyll i alla fält korrekt.');
             return;
@@ -106,11 +118,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const stockReturnRates = getReturnRates('stock', stockReturnRate, years);
         const overallReturnRates = getReturnRates('overall', overallReturnRate, years);
 
+        // Debug: Logga avkastningar
+        console.log("Årliga börsavkastningar:", stockReturnRates);
+        console.log("Årliga värdeökningar för bostaden:", overallReturnRates);
+
         // Beräkna bostadsrättens framtida värde
         let futureValueBuy = calculateFutureValue(purchasePrice, overallReturnRates);
+        console.log("Framtida värde på bostadsrätten:", futureValueBuy);
 
         // Beräkna hyresgästens investeringsportfölj
         let futureValueRent = calculatePortfolioValue(initialInvestment, monthlyRent, monthlyFee, loanToValue, interestRate, strictAmortization, stockReturnRates, years);
+        console.log("Framtida värde på hyresgästens portfölj:", futureValueRent);
 
         // Visa resultat
         displayResults(futureValueBuy, futureValueRent, years);
@@ -135,28 +153,32 @@ document.addEventListener('DOMContentLoaded', function() {
         return rates.reduce((value, rate) => value * (1 + rate), initialValue);
     }
 
-    function calculatePortfolioValue(initialInvestment, monthlyRent, monthlyFee, loanToValue, interestRate, strictAmortization, stockReturnRates, years) {
-        let loanAmount = 2_000_000 * loanToValue;  // Lånebeloppet baserat på köpeskillingen
+    function calculatePortfolioValue(purchasePrice, initialInvestment, monthlyRent, monthlyFee, loanToValue, interestRate, strictAmortization, stockReturnRates, years) {
+        // Dynamiskt lånebelopp baserat på användarens inmatade köpeskilling
+        let loanAmount = purchasePrice * loanToValue;  
         let monthlyAmortization = getMonthlyAmortization(loanAmount, loanToValue, strictAmortization);
-
+    
         // Beräkna månadskostnaden för bostadsägaren
         let monthlyInterestPayment = loanAmount * (interestRate / 12);
         let monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
-
+    
         // Beräkna skillnaden i boendekostnader
-        let monthlyInvestment = Math.max(0, monthlyHousingCost - monthlyRent); // Skillnaden investeras på börsen om den är positiv
-
+        let monthlyInvestment = Math.max(0, monthlyHousingCost - monthlyRent);  // Skillnaden investeras på börsen om den är positiv
+        console.log("Månadskostnad för bostadsägare:", monthlyHousingCost);
+        console.log("Månatlig investering från skillnad i boendekostnader:", monthlyInvestment);
+    
         let futureValueRent = initialInvestment;
-
+    
         // Månatlig avkastning
         for (let i = 0; i < years * 12; i++) {
             const currentYear = Math.floor(i / 12);
             const monthlyStockReturnRate = (1 + stockReturnRates[currentYear]) ** (1 / 12) - 1;
-
+    
             // Lägg till den månatliga investeringen och beräkna framtida värde
             futureValueRent = futureValueRent * (1 + monthlyStockReturnRate) + monthlyInvestment;
+            console.log(`Månad ${i + 1}: Framtida värde av portfölj: ${futureValueRent}`);
         }
-
+    
         return futureValueRent;
     }
 
@@ -165,6 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (loanToValue > 0.5) monthlyAmortization = (loanAmount * 0.01) / 12;
         if (loanToValue > 0.7) monthlyAmortization = (loanAmount * 0.02) / 12;
         if (strictAmortization) monthlyAmortization += (loanAmount * 0.01) / 12;
+        console.log("Månatlig amortering:", monthlyAmortization);
         return monthlyAmortization;
     }
 
