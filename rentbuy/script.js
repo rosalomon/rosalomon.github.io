@@ -101,17 +101,12 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Beräkna avkastningar och värdeökningar
         const stockReturnRates = getReturnRates('stock', stockReturnRate, years);
         const overallReturnRates = getReturnRates('overall', overallReturnRate, years);
 
-        let futureValueBuy = calculateFutureValue(purchasePrice, overallReturnRates);
-        let futureValueRent = calculatePortfolioValue(initialInvestment, monthlyRent, monthlyFee, loanToValue, interestRate, strictAmortization, stockReturnRates, years);
+        const results = calculateComparisonResults(purchasePrice, monthlyFee, monthlyRent, interestRate, loanToValue, strictAmortization, initialInvestment, stockReturnRates, overallReturnRates, years);
 
-        // Visa resultat
-        document.getElementById('buyResult').innerHTML = `<p>Framtida värdet ${years} år: ${futureValueBuy.toFixed(2).toLocaleString()} kr</p>`;
-        document.getElementById('rentResult').innerHTML = `<p>Framtida värdet ${years} år: ${futureValueRent.toFixed(2).toLocaleString()} kr</p>`;
-        document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+        displayResults(results, years);
     }
 
     function getReturnRates(type, defaultRate, years) {
@@ -129,35 +124,46 @@ document.addEventListener('DOMContentLoaded', function() {
         return rates;
     }
 
-    function calculateFutureValue(initialValue, rates) {
-        return rates.reduce((value, rate) => value * (1 + rate), initialValue);
-    }
-
-    function calculatePortfolioValue(initialInvestment, monthlyRent, monthlyFee, loanToValue, interestRate, strictAmortization, stockReturnRates, years) {
-        let loanAmount = initialInvestment * loanToValue;
-        let futureValueRent = initialInvestment;
+    function calculateComparisonResults(purchasePrice, monthlyFee, monthlyRent, interestRate, loanToValue, strictAmortization, initialInvestment, stockReturnRates, overallReturnRates, years) {
+        let loanAmount = purchasePrice * loanToValue;
+        let ownedPropertyValue = purchasePrice;
+        let rentPortfolioValue = initialInvestment;
+        let totalCostOwn = purchasePrice * (1 - loanToValue); // Kontantinsats
+        let totalCostRent = 0;
         let monthlyAmortization = getMonthlyAmortization(loanAmount, loanToValue, strictAmortization);
 
-        for (let i = 0; i < years * 12; i++) {
-            const monthlyInterestPayment = loanAmount * (interestRate / 12);
-            const monthlyHousingCost = monthlyInterestPayment + monthlyAmortization + monthlyFee;
-            const monthlyInvestment = monthlyHousingCost - monthlyRent;
+        for (let month = 0; month < years * 12; month++) {
+            const year = Math.floor(month / 12);
+            
+            // Ägandekostnader
+            const monthlyInterest = (loanAmount * interestRate) / 12;
+            const monthlyCostOwn = monthlyInterest + monthlyAmortization + monthlyFee;
+            totalCostOwn += monthlyCostOwn;
 
-            if (loanToValue > 0.5) {
-                loanAmount -= monthlyAmortization;
-            }
+            // Hyra och investeringskostnader
+            totalCostRent += monthlyRent;
+            const monthlyInvestment = monthlyCostOwn - monthlyRent;
+            
+            // Uppdatera lånebelopp
+            loanAmount -= monthlyAmortization;
 
-            const currentYear = Math.floor(i / 12);
-            const monthlyStockReturnRate = (1 + stockReturnRates[currentYear]) ** (1 / 12) - 1;
+            // Uppdatera värden
+            const monthlyStockReturnRate = Math.pow(1 + stockReturnRates[year], 1/12) - 1;
+            const monthlyPropertyReturnRate = Math.pow(1 + overallReturnRates[year], 1/12) - 1;
 
-            if (monthlyInvestment > 0) {
-                futureValueRent = futureValueRent * (1 + monthlyStockReturnRate) + monthlyInvestment;
-            } else {
-                futureValueRent *= (1 + monthlyStockReturnRate);
-            }
+            ownedPropertyValue *= (1 + monthlyPropertyReturnRate);
+            rentPortfolioValue = rentPortfolioValue * (1 + monthlyStockReturnRate) + monthlyInvestment;
         }
 
-        return futureValueRent;
+        const monthlySavingsRent = (totalCostOwn - totalCostRent) / (years * 12);
+
+        return {
+            futureValueOwn: ownedPropertyValue - loanAmount,
+            futureValueRent: rentPortfolioValue,
+            totalCostOwn: totalCostOwn,
+            totalCostRent: totalCostRent,
+            monthlySavingsRent: monthlySavingsRent
+        };
     }
 
     function getMonthlyAmortization(loanAmount, loanToValue, strictAmortization) {
@@ -166,5 +172,28 @@ document.addEventListener('DOMContentLoaded', function() {
         if (loanToValue > 0.7) monthlyAmortization = (loanAmount * 0.02) / 12;
         if (strictAmortization) monthlyAmortization += (loanAmount * 0.01) / 12;
         return monthlyAmortization;
+    }
+
+    function displayResults(results, years) {
+        const { futureValueOwn, futureValueRent, totalCostOwn, totalCostRent, monthlySavingsRent } = results;
+
+        const formatCurrency = (value) => value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+
+        document.getElementById('buyResult').innerHTML = `
+            <p>Framtida värde efter ${years} år: ${formatCurrency(futureValueOwn)} kr</p>
+            <p>Total boendekostnad: ${formatCurrency(totalCostOwn)} kr</p>
+        `;
+
+        document.getElementById('rentResult').innerHTML = `
+            <p>Framtida portföljvärde efter ${years} år: ${formatCurrency(futureValueRent)} kr</p>
+            <p>Total boendekostnad: ${formatCurrency(totalCostRent)} kr</p>
+        `;
+
+        document.getElementById('comparisonResult').innerHTML = `
+            <p>Månatlig besparing vid hyra: ${formatCurrency(monthlySavingsRent)} kr</p>
+            <p>Total besparing över ${years} år: ${formatCurrency(monthlySavingsRent * years * 12)} kr</p>
+        `;
+
+        document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
     }
 });
