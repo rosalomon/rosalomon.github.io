@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function calculatePortfolioValue(purchasePrice, initialInvestment, monthlyRent, monthlyFee, loanToValue, interestRate, strictAmortization, stockReturnRates, years) {
         // Dynamiskt lånebelopp baserat på användarens inmatade köpeskilling
-        let loanAmount = purchasePrice * loanToValue;  
+        let loanAmount = purchasePrice * loanToValue;  // Detta borde vara en stor andel av köpeskillingen, t.ex. 1 360 000 kr för 68% belåning
         console.log("Lånebelopp:", loanAmount);  // Debug-logg
     
         let monthlyAmortization = getMonthlyAmortization(loanAmount, loanToValue, strictAmortization);
@@ -208,6 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("Månatlig amortering efter kontroll:", monthlyAmortization);  // Debug-logg
         return monthlyAmortization;
     }
+    
     
     function displayResults(futureValueBuy, futureValueRent, years) {
         const buyResultElement = document.getElementById('buyResult');
