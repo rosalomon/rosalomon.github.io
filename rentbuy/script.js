@@ -35,9 +35,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const initialInvestment = parseFloat(document.getElementById('initialInvestment').value);
         const years = getSelectedYears();
 
-        // Debugging: Kontrollera om skärpt amorteringskrav är markerad
-        console.log("Skärpt amorteringskrav markerad:", strictAmortization);
-
         // Validera inmatning
         if (isNaN(purchasePrice) || isNaN(monthlyFee) || isNaN(monthlyRent) || isNaN(interestRate) ||
             isNaN(loanToValue) || isNaN(overallReturnRate) || isNaN(stockReturnRate) || isNaN(initialInvestment) || years === 0) {
@@ -88,27 +85,6 @@ document.addEventListener('DOMContentLoaded', function() {
         displayResults(futureValueBuy, futureValueRent, years);
     }
 
-    function calculateAmortization(loanAmount, loanToValue, strictAmortization) {
-        let annualAmortizationRate = 0;
-
-        // Standard amorteringslogik
-        if (loanToValue > 0.7) {
-            annualAmortizationRate = 0.02; // 2% amortering per år
-        } else if (loanToValue > 0.5) {
-            annualAmortizationRate = 0.01; // 1% amortering per år
-        }
-
-        // Tillägg för skärpt amorteringskrav
-        if (strictAmortization) {
-            console.log("Skärpt amorteringskrav är aktivt, lägger till 1% extra amortering.");
-            annualAmortizationRate += 0.01; // Lägg till 1% för skärpt amortering
-        }
-
-        console.log(`Årlig amorteringssats: ${annualAmortizationRate * 100}%`);
-        const annualAmortization = loanAmount * annualAmortizationRate;
-        return annualAmortization / 12; // Månatlig amortering
-    }
-
     function getReturnRates(type, defaultRate, years) {
         const rates = [];
         const container = document.getElementById(type === 'overall' ? 'individualOverallReturnRates' : 'individualStockReturnRates');
@@ -124,9 +100,26 @@ document.addEventListener('DOMContentLoaded', function() {
         return rates;
     }
 
+    function calculateAmortization(loanAmount, loanToValue, strictAmortization) {
+        let annualAmortizationRate = 0;
+        
+        if (loanToValue > 0.7) {
+            annualAmortizationRate = 0.02; // 2% amortering per år
+        } else if (loanToValue > 0.5) {
+            annualAmortizationRate = 0.01; // 1% amortering per år
+        }
+
+        if (strictAmortization) {
+            annualAmortizationRate += 0.01; // Lägg till 1% för skärpt amortering
+        }
+
+        const annualAmortization = loanAmount * annualAmortizationRate;
+        return annualAmortization / 12; // Månatlig amortering
+    }
+
     function calculateInvestmentPortfolio(initialInvestment, monthlyInvestment, stockReturnRates, years) {
         let futureValue = initialInvestment;
-
+        
         for (let i = 0; i < years * 12; i++) {
             const currentYear = Math.floor(i / 12);
             const monthlyRate = Math.pow(1 + stockReturnRates[currentYear], 1 / 12) - 1;
