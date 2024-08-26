@@ -25,8 +25,28 @@ document.addEventListener('DOMContentLoaded', function() {
         const loanAmount = purchasePrice * loanToValue;
         console.log("Lånebelopp:", loanAmount);
 
+        function calculateAmortization(loanAmount, loanToValue, strictAmortization) {
+            let annualAmortizationRate = 0;
+            
+            if (loanToValue > 0.7) {
+                annualAmortizationRate = 0.02; // 2% amortering per år
+            } else if (loanToValue > 0.5) {
+                annualAmortizationRate = 0.01; // 1% amortering per år
+            }
+    
+            if (strictAmortization) {
+                annualAmortizationRate += 0.01; // Lägg till 1% för skärpt amortering
+            }
+    
+            const annualAmortization = loanAmount * annualAmortizationRate;
+            return annualAmortization / 12; // Månatlig amortering
+        }
+
+
         const monthlyAmortization = calculateAmortization(loanAmount, loanToValue, strictAmortization);
         console.log("Månatlig amortering:", monthlyAmortization);
+
+
 
         // Beräkna månatlig räntekostnad och boendekostnad
         const monthlyInterestPayment = loanAmount * (interestRate / 12);
@@ -37,57 +57,51 @@ document.addEventListener('DOMContentLoaded', function() {
         const monthlyInvestment = Math.max(0, monthlyHousingCost - monthlyRent);
         console.log("Månatlig investering från skillnad i boendekostnader:", monthlyInvestment);
 
+        
+        function calculateFutureValue(initialValue, annualRate, years) {
+        return initialValue * Math.pow(1 + annualRate, years);
+        }
+        
+        
         // Beräkna framtida värde av bostadsrätten
         const futureValueBuy = calculateFutureValue(purchasePrice, overallReturnRate, years);
         console.log("Framtida värde på bostadsrätten:", futureValueBuy);
+        
+        
+        function calculateInvestmentPortfolio(initialInvestment, monthlyInvestment, annualRate, years) {
+            let futureValue = initialInvestment;
+            const monthlyRate = Math.pow(1 + annualRate, 1 / 12) - 1;
+    
+            for (let i = 0; i < years * 12; i++) {
+                futureValue = futureValue * (1 + monthlyRate) + monthlyInvestment;
+            }
+    
+            return futureValue;
+        }
 
         // Beräkna framtida värde av hyresgästens portfölj
         const futureValueRent = calculateInvestmentPortfolio(initialInvestment, monthlyInvestment, stockReturnRate, years);
         console.log("Framtida värde på hyresgästens portfölj:", futureValueRent);
 
+
+        function displayResults(futureValueBuy, futureValueRent, years) {
+            document.getElementById('buyResult').innerHTML = `<p>Framtida värdet efter ${years} år: ${futureValueBuy.toFixed(2)} kr</p>`;
+            document.getElementById('rentResult').innerHTML = `<p>Framtida värdet efter ${years} år: ${futureValueRent.toFixed(2)} kr</p>`;
+        }
+
         // Visa resultat
         displayResults(futureValueBuy, futureValueRent, years);
     }
 
-    function calculateAmortization(loanAmount, loanToValue, strictAmortization) {
-        let annualAmortizationRate = 0;
-        
-        if (loanToValue > 0.7) {
-            annualAmortizationRate = 0.02; // 2% amortering per år
-        } else if (loanToValue > 0.5) {
-            annualAmortizationRate = 0.01; // 1% amortering per år
-        }
+   
 
-        if (strictAmortization) {
-            annualAmortizationRate += 0.01; // Lägg till 1% för skärpt amortering
-        }
 
-        const annualAmortization = loanAmount * annualAmortizationRate;
-        return annualAmortization / 12; // Månatlig amortering
-    }
-
-    function calculateFutureValue(initialValue, annualRate, years) {
-        return initialValue * Math.pow(1 + annualRate, years);
-    }
-
-    function calculateInvestmentPortfolio(initialInvestment, monthlyInvestment, annualRate, years) {
-        let futureValue = initialInvestment;
-        const monthlyRate = Math.pow(1 + annualRate, 1 / 12) - 1;
-
-        for (let i = 0; i < years * 12; i++) {
-            futureValue = futureValue * (1 + monthlyRate) + monthlyInvestment;
-        }
-
-        return futureValue;
-    }
+    
 
     function getSelectedYears() {
         const yearsButton = document.querySelector('.year-btn.active');
         return yearsButton ? parseInt(yearsButton.getAttribute('data-years')) : 0;
     }
 
-    function displayResults(futureValueBuy, futureValueRent, years) {
-        document.getElementById('buyResult').innerHTML = `<p>Framtida värdet efter ${years} år: ${futureValueBuy.toFixed(2)} kr</p>`;
-        document.getElementById('rentResult').innerHTML = `<p>Framtida värdet efter ${years} år: ${futureValueRent.toFixed(2)} kr</p>`;
-    }
+    
 });
