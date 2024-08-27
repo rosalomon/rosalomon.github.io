@@ -18,11 +18,10 @@ För att kunna använda detta verktyg behöver du:
 
 ## Installation
 
-### Steg 1: Klona repositoryt
+### Steg 1: Klona repo-mappen
 
-```bash
-git clone https://github.com/rosalomon/whisper.git
-cd dittrepo
+https://github.com/rosalomon/rosalomon.github.io/
+-> /whisper
 
 ### Steg 2: Installera nödvändiga Python-bibliotek
 
