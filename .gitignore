@@ -1,2 +1,4 @@
 
 whisper/output.wav
+whisper/test.py
+whisper/transcription_With_speakers.txt
