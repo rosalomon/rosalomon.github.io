@@ -1,0 +1,51 @@
+# Transkriberingsverktyg med Talardiarisering och Whisper
+
+Detta är ett Python-baserat transkriberingsverktyg som använder OpenAI:s Whisper-modell för taltranskribering och Pyannote.audio för talardiarisering. Verktyget kan användas för att automatiskt transkribera tal från ljudfiler och identifiera olika talare, med tidsstämplar i formatet `mm:ss`.
+
+## Funktioner
+- **Talardiarisering**: Identifierar och särskiljer olika talare i ljudfilen.
+- **Whisper-transkribering**: Använder OpenAI:s Whisper-modell för att transkribera tal.
+- **Tidsstämplar**: Genererar tidsstämplar för varje segment i transkriberingen.
+
+## Förutsättningar
+
+För att kunna använda detta verktyg behöver du:
+
+1. **Python 3.8 eller senare**
+2. **En dator med GPU (valfritt, men rekommenderas för snabbare bearbetning)**
+3. **ffmpeg** installerat på din dator (för ljudkonvertering)
+4. **Hugging Face-token**: En token för att autentisera med Pyannote-modellerna.
+
+## Installation
+
+### Steg 1: Klona repo-mappen
+
+https://github.com/rosalomon/rosalomon.github.io/
+-> /whisper
+
+### Steg 2: Installera nödvändiga Python-bibliotek
+
+Installera alla beroenden genom att köra följande kommando:
+pip install -r requirements.txt
+
+### Steg 3: Installera GPU-versionen av PyTorch (valfritt men rekommenderas)
+Om du använder en GPU, installera rätt version av PyTorch för din CUDA-version. Du kan hitta rätt kommando för installationen på PyTorchs installationssida.
+
+### Steg 4: Skaffa Hugging Face Token 
+
+## Användning
+
+För att köra transkriberingsverktyget, använd följande kommando:
+python script.py
+Scriptet bearbetar den angivna ljudfilen, utför talardiarisering och transkriberar talet till text, och sparar sedan resultatet i en fil med tidsstämplar och talaridentifiering.
+Exempel på utdata:
+[00:00 - 00:10] Speaker_1: Hej, och välkomna till mötet idag.
+[00:10 - 00:15] Speaker_2: Tack så mycket. Låt oss börja.
+
+Konvertering av ljudfiler
+Om du har en .m4a-fil och behöver konvertera den till .wav för att bearbeta den, kan du använda ffmpeg:
+ffmpeg -i input.m4a output.wav
+
+## Loggning
+Verktyget använder Pythons inbyggda logging-modul för att logga information om bearbetningen. Loggar skrivs både till konsolen och till filen script_log.log. Du kan granska loggfilen för att felsöka eventuella problem som uppstår.
+Om det uppstår några fel under bearbetningen, fångas de upp och loggas i loggfilen. Kontrollera denna för detaljerad information om eventuella problem.
