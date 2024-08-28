@@ -49,7 +49,7 @@ try:
             speaker = segment[2]  # Talare identifierad av pyannote.audio
             
             # Transkribera segmentet med Whisper
-            audio_segment = whisper.load_audio(r"C:\Users\robras\projekt\git\rosalomon.github.io\whisper\test.wav", sr=16000)[int(start_time_seconds*16000):int(end_time_seconds*16000)]
+            audio_segment = whisper.load_audio(r"C:\Users\robras\projekt\git\rosalomon.github.io\whisper\output.wav", sr=16000)[int(start_time_seconds*16000):int(end_time_seconds*16000)]
             result = model.transcribe(audio_segment)
 
             # Konvertera tidsstämplar till mm:ss-format
