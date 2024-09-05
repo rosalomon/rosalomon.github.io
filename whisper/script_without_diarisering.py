@@ -1,6 +1,7 @@
 import whisper
 import time
 import logging
+import warnings
 
 # Konfigurera loggning
 logging.basicConfig(level=logging.INFO, 
@@ -15,6 +16,10 @@ def seconds_to_mmss(seconds):
     minutes = int(seconds // 60)
     seconds = int(seconds % 60)
     return f"{minutes:02}:{seconds:02}"
+
+
+# Ignorera specifika varningar
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 # Starta tidtagningen
 start_time = time.time()

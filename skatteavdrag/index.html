@@ -1,0 +1,77 @@
+<style>
+    .form-container {
+        background-color: #fff;
+        padding: 32px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+        border: 1px solid var(--border-color);
+    }
+    .slider-container {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        font-family: var(--font-family-sans-serif);
+    }
+    .slider {
+        width: 100%;
+        accent-color: var(--corp-color-primary);
+    }
+    .result {
+        margin: 16px 0;
+        font-size: 18px;
+        font-family: var(--font-family-sans-serif);
+    }
+    .form-container button {
+        width: 100px;
+    }
+</style>
+
+<div class="form-container">
+    <h2>Räkna ut: Skatteförändring baserat på din bruttolön</h2>
+    <br>
+    <div class="slider-container">
+        Din bruttolön (per år)
+        <input type="range" id="salary_slider" class="slider" min="20000" max="1500000" step="1000" value="20000">
+        <input type="search" id="salary_value" min="20000" max="1500000" step="1000" value="20000">
+    </div>
+    <br />
+    <div class="result" id="result"></div>
+    <button class="btn btn--small btn--primary btn--round" onclick="calculateTaxChange()">Beräkna</button>
+</div>
+
+<script>
+    // Update the displayed value when the slider is moved
+    document.getElementById('salary_slider').addEventListener('input', function() {
+        document.getElementById('salary_value').value = this.value;
+    });
+    document.getElementById('salary_value').addEventListener('input', function() {
+        document.getElementById('salary_slider').value = this.value;
+    });
+
+    function calculateTaxChange() {
+        var salary = parseFloat(document.getElementById('salary_slider').value);
+
+        // Tax change data from your spreadsheet (simplified for this example)
+        var taxData = [
+            { income: 200000, indexEffect: -610, jobTaxCredit: -106, totalEffect: -716 },
+            { income: 300000, indexEffect: -920, jobTaxCredit: -158, totalEffect: -1078 },
+            { income: 400000, indexEffect: -1220, jobTaxCredit: -205, totalEffect: -1425 },
+            { income: 500000, indexEffect: -1525, jobTaxCredit: -255, totalEffect: -1780 },
+            { income: 600000, indexEffect: -1830, jobTaxCredit: -310, totalEffect: -2140 },
+            { income: 700000, indexEffect: -2135, jobTaxCredit: -370, totalEffect: -2505 }
+        ];
+
+        // Find the closest matching salary range in the tax data
+        var closestMatch = taxData.reduce(function(prev, curr) {
+            return (Math.abs(curr.income - salary) < Math.abs(prev.income - salary) ? curr : prev);
+        });
+
+        // Display the result
+        document.getElementById('result').innerHTML = 
+            '<span>Skatteförändring för din lön (' + salary.toLocaleString() + ' SEK): </span><br>' +
+            '<strong>' + closestMatch.totalEffect + ' SEK</strong> per år.';
+    }
+</script>
