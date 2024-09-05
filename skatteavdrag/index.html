@@ -69,18 +69,40 @@
         return value;
     }
 
-    // Check and adjust input value when pressing 'Beräkna'
-    function calculateTaxChange() {
+    // Synkronisering mellan slider och inputfält
+    function syncSliderAndInput() {
+        var salarySlider = document.getElementById('salary_slider');
         var salaryInput = document.getElementById('salary_value');
-        var salary = parseInt(salaryInput.value.replace(/\s/g, '')); // Remove spaces and parse to integer
-        
-        // Limit salary to allowed range
+
+        // När slidern ändras
+        salarySlider.addEventListener('input', function() {
+            salaryInput.value = formatNumberWithSpaces(this.value);
+        });
+
+        // När inputfältet ändras
+        salaryInput.addEventListener('input', function() {
+            var unformattedValue = this.value.replace(/\s/g, '');  // Ta bort mellanslag
+            salarySlider.value = unformattedValue;  // Uppdatera slidern
+        });
+    }
+
+    // Kör synkronisering
+    syncSliderAndInput();
+
+    // Räkna ut skatteförändring och justera om värdet är utanför gränserna
+    function calculateTaxChange() {
+        var salarySlider = document.getElementById('salary_slider');
+        var salaryInput = document.getElementById('salary_value');
+        var salary = parseInt(salaryInput.value.replace(/\s/g, '')); // Ta bort mellanslag och konvertera till tal
+
+        // Korrigera värde om det är utanför gränserna
         salary = limitInputValue(salary);
         
-        // Update the input field with the adjusted salary
+        // Uppdatera både inputfältet och slidern med det korrigerade värdet
+        salarySlider.value = salary;
         salaryInput.value = formatNumberWithSpaces(salary);
-        
-        // Tax change data from your provided table
+
+        // Skattedata
         var taxData = [
             { income: 16667, indexEffect: -51, jobTaxCredit: -9, totalEffect: -60 },
             { income: 25000, indexEffect: -52, jobTaxCredit: -103, totalEffect: -155 },
@@ -93,12 +115,12 @@
             { income: 125000, indexEffect: -620, jobTaxCredit: -266, totalEffect: -886 }
         ];
 
-        // Find the closest matching salary range in the tax data
+        // Hitta närmaste skattenivå
         var closestMatch = taxData.reduce(function(prev, curr) {
             return (Math.abs(curr.income - salary) < Math.abs(prev.income - salary) ? curr : prev);
         });
 
-        // Display the result with formatted salary
+        // Visa resultatet
         document.getElementById('result').innerHTML = 
             '<span>Skatteförändring för din lön (' + formatNumberWithSpaces(salary) + ' SEK): </span><br>' +
             '<strong>' + closestMatch.totalEffect + ' SEK</strong> per månad.';
