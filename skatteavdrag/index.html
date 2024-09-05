@@ -43,12 +43,21 @@
 </div>
 
 <script>
+    // Format numbers with spaces for thousands (e.g., 25 000)
+    function formatNumberWithSpaces(value) {
+        return Number(value).toLocaleString('sv-SE');
+    }
+
     // Update the displayed value when the slider is moved
     document.getElementById('salary_slider').addEventListener('input', function() {
-        document.getElementById('salary_value').value = this.value;
+        var formattedValue = formatNumberWithSpaces(this.value);
+        document.getElementById('salary_value').value = formattedValue;
     });
+    
     document.getElementById('salary_value').addEventListener('input', function() {
-        document.getElementById('salary_slider').value = this.value;
+        var unformattedValue = this.value.replace(/\s/g, '');  // Remove spaces before updating slider
+        document.getElementById('salary_slider').value = unformattedValue;
+        this.value = formatNumberWithSpaces(unformattedValue);  // Display formatted value with spaces
     });
 
     function calculateTaxChange() {
@@ -72,9 +81,9 @@
             return (Math.abs(curr.income - salary) < Math.abs(prev.income - salary) ? curr : prev);
         });
 
-        // Display the result
+        // Display the result with formatted salary
         document.getElementById('result').innerHTML = 
-            '<span>Skatteförändring för din lön (' + salary.toLocaleString() + ' SEK): </span><br>' +
+            '<span>Skatteförändring för din lön (' + formatNumberWithSpaces(salary) + ' SEK): </span><br>' +
             '<strong>' + closestMatch.totalEffect + ' SEK</strong> per månad.';
     }
 </script>
