@@ -40,8 +40,8 @@
     <br>
     <div class="slider-container">
         Din månadslön före skatt: 
-        <input type="range" id="salary_slider" class="slider" min="16667" max="125000" step="1000" value="16667">
-        <input type="search" id="salary_value" min="16667" max="125000" step="1000" value="16667">
+        <input type="range" id="salary_slider" class="slider" min="16667" max="125000" step="1000" value="38500">
+        <input type="text" id="salary_value" value="38 500">
     </div>
     <br />
     <div class="result" id="result"></div>
@@ -55,7 +55,7 @@
 </div>
 
 <script>
-    // Format numbers with spaces for thousands (e.g., 25 000)
+    // Function to format number with spaces
     function formatNumberWithSpaces(value) {
         return Number(value).toLocaleString('sv-SE');
     }
@@ -69,21 +69,31 @@
         return value;
     }
 
-    // Update the displayed value when the slider is moved
-    document.getElementById('salary_slider').addEventListener('input', function() {
-        var formattedValue = formatNumberWithSpaces(this.value);
-        document.getElementById('salary_value').value = formattedValue;
-    });
-    
-    document.getElementById('salary_value').addEventListener('input', function() {
-        var unformattedValue = this.value.replace(/\s/g, '');  // Remove spaces before updating slider
-        unformattedValue = limitInputValue(parseFloat(unformattedValue) || 0);  // Limit within range
-        document.getElementById('salary_slider').value = unformattedValue;
-        this.value = formatNumberWithSpaces(unformattedValue);  // Display formatted value with spaces
-    });
+    // Update the slider and input field to be synchronized
+    function syncSliderAndInput() {
+        var salarySlider = document.getElementById('salary_slider');
+        var salaryInput = document.getElementById('salary_value');
 
+        // When the slider is moved
+        salarySlider.addEventListener('input', function() {
+            salaryInput.value = formatNumberWithSpaces(this.value);
+        });
+
+        // When the input is changed
+        salaryInput.addEventListener('input', function() {
+            var unformattedValue = this.value.replace(/\s/g, '');  // Remove spaces
+            var limitedValue = limitInputValue(parseInt(unformattedValue) || 0);
+            salarySlider.value = limitedValue;
+            this.value = formatNumberWithSpaces(limitedValue);
+        });
+    }
+
+    // Call sync function to bind events
+    syncSliderAndInput();
+
+    // Calculation function
     function calculateTaxChange() {
-        var salary = parseFloat(document.getElementById('salary_slider').value);
+        var salary = parseInt(document.getElementById('salary_slider').value);
 
         // Tax change data from your provided table
         var taxData = [
