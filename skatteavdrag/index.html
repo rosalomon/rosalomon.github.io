@@ -34,8 +34,8 @@
     <br>
     <div class="slider-container">
         Din bruttolön (per månad)
-        <input type="range" id="salary_slider" class="slider" min="10000" max="100000" step="1000" value="10000">
-        <input type="search" id="salary_value" min="10000" max="100000" step="1000" value="10000">
+        <input type="range" id="salary_slider" class="slider" min="10000" max="125000" step="1000" value="10000">
+        <input type="search" id="salary_value" min="10000" max="125000" step="1000" value="10000">
     </div>
     <br />
     <div class="result" id="result"></div>
@@ -54,14 +54,17 @@
     function calculateTaxChange() {
         var salary = parseFloat(document.getElementById('salary_slider').value);
 
-        // Tax change data from your spreadsheet (simplified for this example)
+        // Tax change data from your provided table
         var taxData = [
             { income: 16667, indexEffect: -51, jobTaxCredit: -9, totalEffect: -60 },
-            { income: 25000, indexEffect: -77, jobTaxCredit: -14, totalEffect: -91 },
-            { income: 33333, indexEffect: -103, jobTaxCredit: -18, totalEffect: -121 },
-            { income: 41667, indexEffect: -128, jobTaxCredit: -22, totalEffect: -150 },
-            { income: 50000, indexEffect: -154, jobTaxCredit: -27, totalEffect: -181 },
-            { income: 58333, indexEffect: -180, jobTaxCredit: -31, totalEffect: -211 }
+            { income: 25000, indexEffect: -52, jobTaxCredit: -103, totalEffect: -155 },
+            { income: 33333, indexEffect: -52, jobTaxCredit: -196, totalEffect: -248 },
+            { income: 35000, indexEffect: -52, jobTaxCredit: -215, totalEffect: -267 },
+            { income: 41667, indexEffect: -106, jobTaxCredit: -267, totalEffect: -372 },
+            { income: 50000, indexEffect: -106, jobTaxCredit: -267, totalEffect: -372 },
+            { income: 62500, indexEffect: -569, jobTaxCredit: -267, totalEffect: -835 },
+            { income: 83333, indexEffect: -620, jobTaxCredit: -266, totalEffect: -886 },
+            { income: 125000, indexEffect: -620, jobTaxCredit: -266, totalEffect: -886 }
         ];
 
         // Find the closest matching salary range in the tax data
