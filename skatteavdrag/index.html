@@ -30,12 +30,12 @@
 </style>
 
 <div class="form-container">
-    <h2>Räkna ut: Skatteförändring baserat på din bruttolön</h2>
+    <h2>Räkna ut: Skatteförändring per månad baserat på din bruttolön</h2>
     <br>
     <div class="slider-container">
-        Din bruttolön (per år)
-        <input type="range" id="salary_slider" class="slider" min="20000" max="1500000" step="1000" value="20000">
-        <input type="search" id="salary_value" min="20000" max="1500000" step="1000" value="20000">
+        Din bruttolön (per månad)
+        <input type="range" id="salary_slider" class="slider" min="10000" max="100000" step="1000" value="10000">
+        <input type="search" id="salary_value" min="10000" max="100000" step="1000" value="10000">
     </div>
     <br />
     <div class="result" id="result"></div>
@@ -56,12 +56,12 @@
 
         // Tax change data from your spreadsheet (simplified for this example)
         var taxData = [
-            { income: 200000, indexEffect: -610, jobTaxCredit: -106, totalEffect: -716 },
-            { income: 300000, indexEffect: -920, jobTaxCredit: -158, totalEffect: -1078 },
-            { income: 400000, indexEffect: -1220, jobTaxCredit: -205, totalEffect: -1425 },
-            { income: 500000, indexEffect: -1525, jobTaxCredit: -255, totalEffect: -1780 },
-            { income: 600000, indexEffect: -1830, jobTaxCredit: -310, totalEffect: -2140 },
-            { income: 700000, indexEffect: -2135, jobTaxCredit: -370, totalEffect: -2505 }
+            { income: 16667, indexEffect: -51, jobTaxCredit: -9, totalEffect: -60 },
+            { income: 25000, indexEffect: -77, jobTaxCredit: -14, totalEffect: -91 },
+            { income: 33333, indexEffect: -103, jobTaxCredit: -18, totalEffect: -121 },
+            { income: 41667, indexEffect: -128, jobTaxCredit: -22, totalEffect: -150 },
+            { income: 50000, indexEffect: -154, jobTaxCredit: -27, totalEffect: -181 },
+            { income: 58333, indexEffect: -180, jobTaxCredit: -31, totalEffect: -211 }
         ];
 
         // Find the closest matching salary range in the tax data
@@ -72,6 +72,6 @@
         // Display the result
         document.getElementById('result').innerHTML = 
             '<span>Skatteförändring för din lön (' + salary.toLocaleString() + ' SEK): </span><br>' +
-            '<strong>' + closestMatch.totalEffect + ' SEK</strong> per år.';
+            '<strong>' + closestMatch.totalEffect + ' SEK</strong> per månad.';
     }
 </script>
