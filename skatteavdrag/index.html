@@ -69,32 +69,17 @@
         return value;
     }
 
-    // Update the slider and input field to be synchronized
-    function syncSliderAndInput() {
-        var salarySlider = document.getElementById('salary_slider');
-        var salaryInput = document.getElementById('salary_value');
-
-        // When the slider is moved
-        salarySlider.addEventListener('input', function() {
-            salaryInput.value = formatNumberWithSpaces(this.value);
-        });
-
-        // When the input is changed
-        salaryInput.addEventListener('input', function() {
-            var unformattedValue = this.value.replace(/\s/g, '');  // Remove spaces
-            var limitedValue = limitInputValue(parseInt(unformattedValue) || 0);
-            salarySlider.value = limitedValue;
-            this.value = formatNumberWithSpaces(limitedValue);
-        });
-    }
-
-    // Call sync function to bind events
-    syncSliderAndInput();
-
-    // Calculation function
+    // Check and adjust input value when pressing 'Beräkna'
     function calculateTaxChange() {
-        var salary = parseInt(document.getElementById('salary_slider').value);
-
+        var salaryInput = document.getElementById('salary_value');
+        var salary = parseInt(salaryInput.value.replace(/\s/g, '')); // Remove spaces and parse to integer
+        
+        // Limit salary to allowed range
+        salary = limitInputValue(salary);
+        
+        // Update the input field with the adjusted salary
+        salaryInput.value = formatNumberWithSpaces(salary);
+        
         // Tax change data from your provided table
         var taxData = [
             { income: 16667, indexEffect: -51, jobTaxCredit: -9, totalEffect: -60 },
