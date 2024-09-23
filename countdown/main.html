@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countdown Klocka</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+    
+    .countdown {
+      text-align: center;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .countdown h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+    
+    .countdown .time {
+      font-size: 48px;
+      letter-spacing: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="countdown">
+  <h1>Då sänks styrräntan! </h1>
+  <div id="time" class="time"></div>
+</div>
+
+<script>
+  // Sätt datumet du räknar ned till
+  const countdownDate = new Date("Sep 25, 2024 09:30:00").getTime();
+
+  // Uppdatera nedräkningen varje sekund
+  const countdownFunction = setInterval(function() {
+    // Hämta dagens datum och tid
+    const now = new Date().getTime();
+    
+    // Skillnaden mellan nu och nedräkningsdatumet
+    const distance = countdownDate - now;
+    
+    // Beräkna tid (dagar, timmar, minuter, sekunder)
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+    // Visa resultatet i elementet med id="time"
+    document.getElementById("time").innerHTML = days + "d " + hours + "h "
+    + minutes + "m " + seconds + "s ";
+    
+    // Om nedräkningen är över, visa text
+    if (distance < 0) {
+      clearInterval(countdownFunction);
+      document.getElementById("time").innerHTML = "Tiden är ute!";
+    }
+  }, 1000);
+</script>
+
+</body>
+</html>
