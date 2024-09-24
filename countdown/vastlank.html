@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Byggprojekt: La Sagrada Familia och Västlänken</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .progress-container {
+      width: 80%;
+      max-width: 600px;
+      margin: 20px 0;
+    }
+
+    .progress-label {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      background-color: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .progress {
+      height: 30px;
+      width: 0;
+      background-color: #4caf50;
+      text-align: center;
+      line-height: 30px;
+      color: white;
+      border-radius: 10px;
+      transition: width 1s ease-in-out;
+    }
+
+    #familia .progress {
+      background-color: #e67e22;
+    }
+
+    #vastlanken .progress {
+      background-color: #3498db;
+    }
+
+    .status-text {
+      font-size: 14px;
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Byggstatus: La Sagrada Familia och Västlänken</h1>
+
+<div class="progress-container" id="familia">
+  <div class="progress-label">La Sagrada Familia (Start: 1882)</div>
+  <div class="progress-bar">
+    <div class="progress" id="sagradaProgress">0%</div>
+  </div>
+  <div class="status-text">Antal år byggt: <span id="sagradaYear">0</span> år</div>
+</div>
+
+<div class="progress-container" id="vastlanken">
+  <div class="progress-label">Västlänken (Start: 2018)</div>
+  <div class="progress-bar">
+    <div class="progress" id="vastlankenProgress">0%</div>
+  </div>
+  <div class="status-text">Antal år byggt: <span id="vastlankenYear">0</span> år</div>
+</div>
+
+<script>
+  // Startår för projekten
+  const sagradaStartYear = 1882;
+  const vastlankenStartYear = 2018;
+  const currentYear = new Date().getFullYear();
+
+  // Antal byggda år för respektive projekt
+  const sagradaYears = currentYear - sagradaStartYear;
+  const vastlankenYears = currentYear - vastlankenStartYear;
+
+  // Progress-värden för skämtet
+  const sagradaProgressValue = Math.min(85, (sagradaYears / 150) * 100); // Procent baserat på 150 år.
+  const vastlankenProgressValue = Math.min(30, (vastlankenYears / 10) * 100); // För Västlänken, ge en låg procent.
+
+  // Uppdatera La Sagrada Familia progress
+  const sagradaProgress = document.getElementById("sagradaProgress");
+  const sagradaYearText = document.getElementById("sagradaYear");
+  sagradaProgress.style.width = sagradaProgressValue + "%";
+  sagradaProgress.innerHTML = Math.floor(sagradaProgressValue) + "%";
+  sagradaYearText.innerHTML = sagradaYears;
+
+  // Uppdatera Västlänken progress
+  const vastlankenProgress = document.getElementById("vastlankenProgress");
+  const vastlankenYearText = document.getElementById("vastlankenYear");
+  vastlankenProgress.style.width = vastlankenProgressValue + "%";
+  vastlankenProgress.innerHTML = Math.floor(vastlankenProgressValue) + "%";
+  vastlankenYearText.innerHTML = vastlankenYears;
+
+</script>
+
+</body>
+</html>
