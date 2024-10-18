@@ -1,0 +1,108 @@
+<style>
+    .form-container {
+        background-color: #fff;
+        padding: 32px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+        border: 1px solid var(--border-color);
+    }
+    .input-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-family: var(--font-family-sans-serif);
+    }
+    .input-field {
+        width: 100%;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        text-align: right;
+    }
+    .result {
+        margin: 16px 0;
+        font-size: 18px;
+        font-family: var(--font-family-sans-serif);
+    }
+    .form-container button {
+        width: 100px;
+    }
+    .source-reference {
+        font-size: 14px;
+        font-family: var(--font-family-sans-serif);
+        color: #555;
+    }
+</style>
+<div class="form-container">
+    <h2>Beräkna din ökade disponibla inkomst utan amorteringskrav</h2>
+    <br>
+    <div class="input-container">
+        <label for="property_value">Bostadens värde (kronor):</label>
+        <input type="tel" inputmode="numeric" id="property_value" class="input-field" value="0">
+        
+        <label for="loan_amount">Bolånets storlek (kronor):</label>
+        <input type="tel" inputmode="numeric" id="loan_amount" class="input-field" value="0">
+        
+        <label for="annual_income">Årsinkomst före skatt (kronor):</label>
+        <input type="tel" inputmode="numeric" id="annual_income" class="input-field" value="0">
+    </div>
+    <div class="result" id="result"></div>
+    <button class="btn btn--small btn--primary btn--round" onclick="calculateDisposableIncome()">Beräkna</button>
+    <br>
+    <div class="source-reference">
+        <span>*Beräkningen baseras på de lagstadgade amorteringskraven.<br>
+        Faktiska amorteringskrav kan variera beroende på individuella omständigheter.</span>
+    </div>
+</div>
+<script>
+    function formatNumberWithSpaces(value) {
+        return Number(value).toLocaleString('sv-SE');
+    }
+
+    function formatInput(input) {
+        // Ta bort alla icke-numeriska tecken
+        let value = input.value.replace(/\D/g, '');
+        // Formattera med tusentalsavgränsare
+        input.value = formatNumberWithSpaces(value);
+    }
+
+    // Lägg till event listeners för alla input-fält
+    document.querySelectorAll('.input-field').forEach(input => {
+        input.addEventListener('input', function() {
+            formatInput(this);
+        });
+    });
+
+    function calculateDisposableIncome() {
+        var loanAmount = parseFloat(document.getElementById('loan_amount').value.replace(/\s/g, ''));
+        var propertyValue = parseFloat(document.getElementById('property_value').value.replace(/\s/g, ''));
+        var annualIncome = parseFloat(document.getElementById('annual_income').value.replace(/\s/g, ''));
+        
+        var loanToValueRatio = (loanAmount / propertyValue) * 100;
+        var loanToIncomeRatio = loanAmount / annualIncome;
+        
+        var amortizationRate = 0;
+        
+        if (loanToValueRatio > 70) {
+            amortizationRate += 0.02;
+        } else if (loanToValueRatio > 50) {
+            amortizationRate += 0.01;
+        }
+        
+        if (loanToIncomeRatio > 4.5) {
+            amortizationRate += 0.01;
+        }
+        
+        var annualAmortization = loanAmount * amortizationRate;
+        var monthlyAmortization = annualAmortization / 12;
+        
+        document.getElementById('result').innerHTML =
+            '<span>Din ökade disponibla inkomst utan amorteringskrav: </span><br>' +
+            '<span><strong>' + formatNumberWithSpaces(Math.round(monthlyAmortization)) + ' kronor</strong> per månad.</span><br>' +
+            '<span>Detta motsvarar <strong>' + formatNumberWithSpaces(Math.round(annualAmortization)) + ' kronor</strong> per år.</span><br>' +
+            '<span>Ditt amorteringskrav är <strong>' + (amortizationRate * 100) + '%</strong> per år.</span>';
+    }
+</script>
